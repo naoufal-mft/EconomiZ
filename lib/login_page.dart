@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'registration_page.dart';
 
 class CustomLoginPage extends StatelessWidget {
   @override
@@ -64,7 +65,12 @@ class CustomLoginPage extends StatelessWidget {
               SizedBox(height: 10.0),
               TextButton(
                 onPressed: () {
-                  // Actions à effectuer lors de l'inscription
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => RegistrationPage(),
+                    ),
+                  );
                 },
                 child: Text(
                   'S\'inscrire',

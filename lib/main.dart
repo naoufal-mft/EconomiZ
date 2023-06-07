@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'login_page.dart'; // Importez le fichier login_page.dart que vous avez créé
+import 'login_page.dart';
+import 'registration_page.dart';
 
 void main() {
   runApp(MyApp());
@@ -13,7 +14,11 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: CustomLoginPage(), // Utilisez la page de connexion personnalisée que vous avez créée
+      initialRoute: '/',
+      routes: {
+        '/': (context) => CustomLoginPage(),
+        '/inscription': (context) => RegistrationPage(),
+      },
     );
   }
 }
