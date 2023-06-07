@@ -1,77 +1,98 @@
 import 'package:flutter/material.dart';
 
-class LoginPage extends StatefulWidget {
-  @override
-  _LoginPageState createState() => _LoginPageState();
-}
-
-class _LoginPageState extends State<LoginPage> {
-  final TextEditingController _emailController = TextEditingController();
-  final TextEditingController _passwordController = TextEditingController();
-
+class CustomLoginPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Page de connexion'),
-      ),
-      body: Padding(
-        padding: EdgeInsets.all(16.0),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            // Logo de l'application
-            Image.asset(
-              'assets/logo.png',
-              width: 150,
-              height: 150,
-            ),
-            SizedBox(height: 32.0),
-            // Champ de texte pour l'adresse e-mail
-            TextField(
-              controller: _emailController,
-              decoration: InputDecoration(
-                labelText: 'Adresse e-mail',
+      backgroundColor: Colors.blueGrey[900],
+      body: SafeArea(
+        child: Padding(
+          padding: EdgeInsets.all(20.0),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Expanded(
+                child: Center(
+                  child: Image.asset(
+                    'assets/logo2.png', // Remplacez "mon_logo.png" par le chemin de votre propre fichier de logo
+                    width: 200.0,
+                    height: 200.0,
+                  ),
+                ),
               ),
-            ),
-            SizedBox(height: 16.0),
-            // Champ de texte pour le mot de passe
-            TextField(
-              controller: _passwordController,
-              decoration: InputDecoration(
-                labelText: 'Mot de passe',
+              SizedBox(height: 20.0),
+              TextField(
+                decoration: InputDecoration(
+                  labelText: 'Nom d\'utilisateur',
+                  filled: true,
+                  fillColor: Colors.white,
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10.0),
+                  ),
+                ),
               ),
-              obscureText: true,
-            ),
-            SizedBox(height: 32.0),
-            // Bouton pour se connecter
-            ElevatedButton(
-              onPressed: () {
-                // Ajoutez ici la logique de connexion
-                String email = _emailController.text;
-                String password = _passwordController.text;
-                // Vérifiez les informations d'identification et effectuez les actions nécessaires (par exemple, navigation vers une autre page)
-              },
-              child: Text('Se connecter'),
-            ),
-            SizedBox(height: 16.0),
-            // Bouton pour s'inscrire
-            OutlinedButton(
-              onPressed: () {
-                // Ajoutez ici la logique pour rediriger l'utilisateur vers la page d'inscription
-              },
-              child: Text('S\'inscrire'),
-            ),
-          ],
+              SizedBox(height: 10.0),
+              TextField(
+                decoration: InputDecoration(
+                  labelText: 'Mot de passe',
+                  filled: true,
+                  fillColor: Colors.white,
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10.0),
+                  ),
+                ),
+                obscureText: true,
+              ),
+              SizedBox(height: 20.0),
+              ElevatedButton(
+                onPressed: () {
+                  // Actions à effectuer lors de la connexion
+                },
+                style: ElevatedButton.styleFrom(
+                  primary: Colors.orange,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10.0),
+                  ),
+                  padding: EdgeInsets.symmetric(vertical: 15.0),
+                ),
+                child: Text(
+                  'Se connecter',
+                  style: TextStyle(fontSize: 16.0),
+                ),
+              ),
+              SizedBox(height: 10.0),
+              TextButton(
+                onPressed: () {
+                  // Actions à effectuer lors de l'inscription
+                },
+                child: Text(
+                  'S\'inscrire',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 16.0,
+                    decoration: TextDecoration.underline,
+                  ),
+                ),
+              ),
+              Spacer(),
+              Align(
+                alignment: Alignment.bottomRight,
+                child: IconButton(
+                  onPressed: () {
+                    // Actions à effectuer lors du clic sur le bouton d'aide
+                  },
+                  icon: Icon(
+                    Icons.help,
+                    color: Colors.white,
+                    size: 30.0,
+                  ),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          // Ajoutez ici la logique pour gérer le bouton d'aide
-        },
-        child: Icon(Icons.help),
-      ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.endDocked,
     );
   }
 }
