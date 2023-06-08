@@ -48,6 +48,7 @@ class _RegistrationPageState extends State<RegistrationPage> with SingleTickerPr
         title: Text('Inscription'),
         backgroundColor: Color(0xFFFFD700), // Couleur dorée
       ),
+      backgroundColor: Color(0xFF2C2C2C), // Couleur de fond sombre
       body: SingleChildScrollView(
         child: Padding(
           padding: EdgeInsets.all(20.0),

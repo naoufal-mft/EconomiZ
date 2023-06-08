@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'registration_page.dart';
+import 'budget_page.dart';
 
 class CustomLoginPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.blueGrey[900],
+      backgroundColor: Color(0xFF2C2C2C),
       body: SafeArea(
         child: Padding(
           padding: EdgeInsets.all(20.0),
@@ -23,6 +24,7 @@ class CustomLoginPage extends StatelessWidget {
                 ),
               ),
               SizedBox(height: 20.0),
+
               TextField(
                 decoration: InputDecoration(
                   labelText: 'Nom d\'utilisateur',
@@ -68,7 +70,7 @@ class CustomLoginPage extends StatelessWidget {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => RegistrationPage(),
+                      builder: (context) => BudgetPage(),
                     ),
                   );
                 },

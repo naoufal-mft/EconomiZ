@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'login_page.dart';
 import 'registration_page.dart';
+import 'budget_page.dart';
 
 void main() {
   runApp(MyApp());
