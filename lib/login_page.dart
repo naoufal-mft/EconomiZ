@@ -16,36 +16,54 @@ class CustomLoginPage extends StatelessWidget {
             children: [
               Expanded(
                 child: Center(
-                  child: Image.asset(
-                    'assets/logo2.png', // Remplacez "mon_logo.png" par le chemin de votre propre fichier de logo
-                    width: 200.0,
-                    height: 200.0,
+                  child: ShaderMask(
+                    blendMode: BlendMode.srcATop,
+                    shaderCallback: (Rect bounds) {
+                      return LinearGradient(
+                        colors: [
+                          Colors.orange,
+                          Colors.orangeAccent.withOpacity(0.8),
+                          Colors.transparent,
+                        ],
+                        stops: [0.0, 0.4, 1.0],
+                        begin: Alignment.centerLeft,
+                        end: Alignment.centerRight,
+                      ).createShader(bounds);
+                    },
+                    child: Image.asset(
+                      'assets/logo2.png',
+                      width: 400.0,
+                      height: 400.0,
+                    ),
                   ),
                 ),
               ),
               SizedBox(height: 20.0),
-
-              TextField(
-                decoration: InputDecoration(
-                  labelText: 'Nom d\'utilisateur',
-                  filled: true,
-                  fillColor: Colors.white,
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10.0),
+              Center(
+                child: TextField(
+                  decoration: InputDecoration(
+                    labelText: 'Adresse mail',
+                    filled: true,
+                    fillColor: Colors.white,
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10.0),
+                    ),
                   ),
                 ),
               ),
               SizedBox(height: 10.0),
-              TextField(
-                decoration: InputDecoration(
-                  labelText: 'Mot de passe',
-                  filled: true,
-                  fillColor: Colors.white,
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10.0),
+              Center(
+                child: TextField(
+                  decoration: InputDecoration(
+                    labelText: 'Mot de passe',
+                    filled: true,
+                    fillColor: Colors.white,
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10.0),
+                    ),
                   ),
+                  obscureText: true,
                 ),
-                obscureText: true,
               ),
               SizedBox(height: 20.0),
               ElevatedButton(
@@ -70,7 +88,7 @@ class CustomLoginPage extends StatelessWidget {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => BudgetPage(),
+                      builder: (context) => RegistrationPage(),
                     ),
                   );
                 },
@@ -88,7 +106,24 @@ class CustomLoginPage extends StatelessWidget {
                 alignment: Alignment.bottomRight,
                 child: IconButton(
                   onPressed: () {
-                    // Actions à effectuer lors du clic sur le bouton d'aide
+                    showDialog(
+                      context: context,
+                      builder: (context) => AlertDialog(
+                        title: Text('Aide'),
+                        content: Text('Voici une description de l\'application.'),
+                        actions: [
+                          TextButton(
+                            onPressed: () {
+                              Navigator.pop(context);
+                            },
+                            child: Text(
+                              'Fermer',
+                              style: TextStyle(color: Colors.orange),
+                            ),
+                          ),
+                        ],
+                      ),
+                    );
                   },
                   icon: Icon(
                     Icons.help,
