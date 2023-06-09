@@ -104,6 +104,7 @@ class basedd {
     return result.isNotEmpty;
   }
 
+
 }
 
 void main() async {
@@ -112,13 +113,6 @@ void main() async {
   basedd bdd= basedd();
   await bdd.initialDb();
 
-  // Test the insertData function
-  int insertedId = await bdd.insertData("INSERT INTO coordonnees(Nom, Prenom) VALUES('John', 'Doe')");
-  print('Inserted ID: $insertedId');
-  int insertedId2 = await bdd.insertData("INSERT INTO coordonnees(Nom, Prenom) VALUES('John', 'wick')");
-  print('Inserted ID: $insertedId2');
-  int insertedId3 = await bdd.insertData("INSERT INTO auth(iduser, mail, mdp) VALUES(1,'john@gmail.com', '12345')");
-  print('Inserted ID: $insertedId3');
   List<Map> result = await bdd.readData('SELECT * FROM auth');
   print('Read Data:');
   result.forEach((row) {
@@ -127,23 +121,11 @@ void main() async {
 
 
 
-  // Test the updateData function
-  int rowsAffected = await bdd.updateData("UPDATE coordonnees SET Prenom = 'Jane' WHERE idUser = 1");
-  print('Rows Affected: $rowsAffected');
-
   List<Map> result2 = await bdd.readData('SELECT * FROM coordonnees');
   print('Read Data:');
   result2.forEach((row) {
     print(row);
   });
 
-  // Test the deleteData function
-  int rowsDeleted = await bdd.deleteData("DELETE FROM coordonnees WHERE idUser = 1");
-  print('Rows Deleted: $rowsDeleted');
 
-  List<Map> result3 = await bdd.readData('SELECT * FROM coordonnees');
-  print('Read Data:');
-  result3.forEach((row) {
-    print(row);
-  });
 }

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'budget_page.dart';
+import 'basedd.dart';
 
 class RegistrationPage extends StatefulWidget {
   @override
@@ -145,7 +146,7 @@ class _RegistrationPageState extends State<RegistrationPage> with SingleTickerPr
                 ),
                 SizedBox(height: 20.0),
                 ElevatedButton(
-                  onPressed: () {
+                  onPressed: () async {
                     // Vérifier les informations de l'utilisateur
                     String nom = nomController.text;
                     String prenom = prenomController.text;
@@ -163,6 +164,13 @@ class _RegistrationPageState extends State<RegistrationPage> with SingleTickerPr
                         motDePasse.isNotEmpty &&
                         confirmationMotDePasse.isNotEmpty) {
                       if (motDePasse == confirmationMotDePasse) {
+                        basedd database = basedd();
+                        // Insérer les données dans la table "coordonnees"
+                        String coordonneesInsertQuery = "INSERT INTO coordonnees(Nom, Prenom) VALUES('$nom', '$prenom')";
+                        int insertedCoordonneesId = await database.insertData(coordonneesInsertQuery);
+                        // Insérer les données dans la table "auth"
+                        String authInsertQuery = "INSERT INTO auth(iduser, mail, mdp) VALUES($insertedCoordonneesId, '$email', '$motDePasse')";
+                        int insertedAuthId = await database.insertData(authInsertQuery);
                         // Rediriger vers la page de gestion du budget
                         Navigator.push(
                           context,
