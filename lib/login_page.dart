@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'basedd.dart';
 
 class CustomLoginPage extends StatelessWidget {
+  TextEditingController usernameController = TextEditingController();
+  TextEditingController passwordController = TextEditingController();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -23,6 +26,7 @@ class CustomLoginPage extends StatelessWidget {
               ),
               SizedBox(height: 20.0),
               TextField(
+                controller: usernameController,
                 decoration: InputDecoration(
                   labelText: 'Nom d\'utilisateur',
                   filled: true,
@@ -34,6 +38,7 @@ class CustomLoginPage extends StatelessWidget {
               ),
               SizedBox(height: 10.0),
               TextField(
+                controller: passwordController,
                 decoration: InputDecoration(
                   labelText: 'Mot de passe',
                   filled: true,
@@ -46,8 +51,23 @@ class CustomLoginPage extends StatelessWidget {
               ),
               SizedBox(height: 20.0),
               ElevatedButton(
-                onPressed: () {
+                onPressed: () async{
+                  String username = usernameController.text;
+                  String password = passwordController.text;
+
+                  print("Username: $username");
+                  print("Password: $password");
                   // Actions à effectuer lors de la connexion
+                  basedd bdd = basedd();
+                  await bdd.initialDb();
+                  bool isAuthenticated = await bdd.authenticate(username, password);
+                  if (isAuthenticated) {
+                    // Authentification réussie, effectuez les actions souhaitées
+                    print("Authentification réussie !");
+                  } else {
+                    // Authentification échouée, affichez un message d'erreur ou effectuez d'autres actions
+                    print("Nom d'utilisateur ou mot de passe incorrect !");
+                  }
                 },
                 style: ElevatedButton.styleFrom(
                   primary: Colors.orange,

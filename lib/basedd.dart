@@ -97,6 +97,13 @@ class basedd {
     int response = await mydb!.rawDelete(sql);
     return response;
   }
+
+  Future<bool> authenticate(String username, String password) async {
+    String sql = "SELECT * FROM auth WHERE mail = '$username' AND mdp = '$password'";
+    List<Map> result = await readData(sql);
+    return result.isNotEmpty;
+  }
+
 }
 
 void main() async {
@@ -108,10 +115,11 @@ void main() async {
   // Test the insertData function
   int insertedId = await bdd.insertData("INSERT INTO coordonnees(Nom, Prenom) VALUES('John', 'Doe')");
   print('Inserted ID: $insertedId');
-  int insertedId2 = await bdd.insertData("INSERT INTO coordonnees(Nom, Prenom) VALUES('John', 'zbi')");
+  int insertedId2 = await bdd.insertData("INSERT INTO coordonnees(Nom, Prenom) VALUES('John', 'wick')");
   print('Inserted ID: $insertedId2');
-
-  List<Map> result = await bdd.readData('SELECT * FROM coordonnees');
+  int insertedId3 = await bdd.insertData("INSERT INTO auth(iduser, mail, mdp) VALUES(1,'john@gmail.com', '12345')");
+  print('Inserted ID: $insertedId3');
+  List<Map> result = await bdd.readData('SELECT * FROM auth');
   print('Read Data:');
   result.forEach((row) {
     print(row);
