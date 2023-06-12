@@ -43,10 +43,10 @@ class _MyHomePageState extends State<MyHomePage> {
             // Chart
             Container(
               alignment: Alignment.center,
-              height: 500,
+              height:350,
               child: SfCircularChart(
                 title: ChartTitle(text: 'Mes dépenses pour ce mois'),
-                legend: Legend(isVisible: true, overflowMode: LegendItemOverflowMode.wrap),
+                legend: Legend(isVisible: false, overflowMode: LegendItemOverflowMode.wrap),
                 tooltipBehavior: _tooltipBehavior,
                 series: <CircularSeries>[
                   DoughnutSeries<GDPData, String>(
@@ -83,13 +83,45 @@ class _MyHomePageState extends State<MyHomePage> {
                       'Other Widgets',
                       style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                     ),
-                    ElevatedButton(
-                      onPressed: () {
-                        _showAddComponentDialog(context);
-                      },
-                      child: Text('Add Component'),
+                    Spacer(),
+                    Container(
+                      alignment: Alignment.bottomCenter,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                              fixedSize: Size(120, 40), // Set a fixed size for the button
+                              primary: Colors.cyan, // Set the button color to cyan
+                            ),
+                            onPressed: () {
+                              // Handle "Mes dépenses" button press
+                            },
+                            child: Text('Mes dépenses'),
+                          ),
+                          ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                              fixedSize: Size(120, 40), // Set a fixed size for the button
+                              primary: Colors.cyan, // Set the button color to cyan
+                            ),
+                            onPressed: () {
+                              // Handle "Mes charges" button press
+                            },
+                            child: Text('Mes charges'),
+                          ),
+                          ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                              fixedSize: Size(120, 40), // Set a fixed size for the button
+                              primary: Colors.cyan, // Set the button color to cyan
+                            ),
+                            onPressed: () {
+                              // Handle "Mon profil" button press
+                            },
+                            child: Text('Mon profil'),
+                          ),
+                        ],
+                      ),
                     ),
-                    // Add your other widgets here
                   ],
                 ),
               ),
@@ -99,19 +131,14 @@ class _MyHomePageState extends State<MyHomePage> {
       ),
     );
   }
-
   List<GDPData> getChartData() {
     final List<GDPData> chartData = [
       GDPData('Loyer', 600),
       GDPData('Courses', 250),
-      GDPData('Sport', 30),
-      GDPData('electricité', 100),
-      GDPData('abonnement', 80),
-      GDPData('Loooyer', 600),
-      GDPData('Cooourses', 250),
-      GDPData('Spoooort', 30),
-      GDPData('electtttricité', 100),
-      GDPData('abonnnnnement', 80),
+      GDPData('Loyer', 600),
+      GDPData('Courses', 250),
+      GDPData('Loyer', 600),
+      GDPData('Courses', 250),
     ];
     return chartData;
   }
