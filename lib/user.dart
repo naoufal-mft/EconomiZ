@@ -13,13 +13,18 @@ class User{
     mesDepenses.remove(id);
   }
 
-  List<double> calculatePercentageValues(double salary, List<double> percentages) {
+  //fonction de calcul de proposition de depenses
+  /**
+   * salaire double : salaire du user
+   * pourcentage Map : dictionnaire contenant la paire (depenses,pourcentage de la depense par raport au budget
+   *
+   * retourne une Map de proposition de depenses dont la clé correspond au nom de la depense
+   */
+  Map<String,double> calculatePercentageValues(double salaire, Map<String,double> pourcentages) {
 
-    List<double> percentageValues = [];
-    for (double percentage in percentages) {
-      double value = (percentage * 100) / salary;
-      percentageValues.add(value);
-    }
+    var percentageValues = Map<String,double>();
+    pourcentages.forEach((cle,valeur) =>
+        pourcentages[cle] = (salaire*valeur)/100);
     return percentageValues;
   }
 
