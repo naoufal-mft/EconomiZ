@@ -25,6 +25,7 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   List<GDPData> _chartData = [];
+  int remainingSalary = 15000;
   TooltipBehavior _tooltipBehavior = TooltipBehavior(enable: true);
 
   @override
@@ -43,86 +44,82 @@ class _MyHomePageState extends State<MyHomePage> {
             // Chart
             Container(
               alignment: Alignment.center,
-              height:350,
-              child: SfCircularChart(
-                title: ChartTitle(text: 'Mes dépenses pour ce mois'),
-                legend: Legend(isVisible: false, overflowMode: LegendItemOverflowMode.wrap),
-                tooltipBehavior: _tooltipBehavior,
-                series: <CircularSeries>[
-                  DoughnutSeries<GDPData, String>(
-                    dataSource: _chartData,
-                    xValueMapper: (GDPData data, _) => data.charges,
-                    yValueMapper: (GDPData data, _) => data.gdp,
-                    dataLabelSettings: DataLabelSettings(
-                      isVisible: true,
-                      textStyle: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                      offset: Offset(10, 25), // Adjust the vertical offset as needed
+              height: 350,
+              child: Stack(
+                alignment: Alignment.center,
+                children: [
+                  SfCircularChart(
+                    title: ChartTitle(text: 'Mes dépenses pour ce mois'),
+                    legend: Legend(isVisible: false, overflowMode: LegendItemOverflowMode.wrap),
+                    tooltipBehavior: _tooltipBehavior,
+                    series: <CircularSeries>[
+                      DoughnutSeries<GDPData, String>(
+                        dataSource: _chartData,
+                        xValueMapper: (GDPData data, _) => data.charges,
+                        yValueMapper: (GDPData data, _) => data.gdp,
+                        dataLabelSettings: DataLabelSettings(
+                          isVisible: true,
+                          textStyle: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                          offset: Offset(10, 25), // Adjust the vertical offset as needed
+                        ),
+                        enableTooltip: true,
+                      ),
+                    ],
+                  ),
+                  Positioned.fill(
+                    child: Align(
+                      alignment: Alignment.center,
+                      child: Text(
+                        remainingSalary.toString(),
+                        style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                      ),
                     ),
-                    enableTooltip: true,
                   ),
                 ],
               ),
             ),
-            // Legend
-            Container(
-              alignment: Alignment.center,
-              padding: EdgeInsets.only(bottom: 16.0),
-              child: Text(
-                'Legend: Specify your small writing here',
-                style: TextStyle(fontSize: 12),
-              ),
-            ),
-            // Rest of the content
+
+            // Buttons
             Expanded(
-              child: Container(
-                padding: EdgeInsets.all(16.0),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(
-                      'Other Widgets',
-                      style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                    ),
-                    Spacer(),
-                    Container(
-                      alignment: Alignment.bottomCenter,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: [
-                          ElevatedButton(
-                            style: ElevatedButton.styleFrom(
-                              fixedSize: Size(120, 40), // Set a fixed size for the button
-                              primary: Colors.cyan, // Set the button color to cyan
-                            ),
-                            onPressed: () {
-                              // Handle "Mes dépenses" button press
-                            },
-                            child: Text('Mes dépenses'),
-                          ),
-                          ElevatedButton(
-                            style: ElevatedButton.styleFrom(
-                              fixedSize: Size(120, 40), // Set a fixed size for the button
-                              primary: Colors.cyan, // Set the button color to cyan
-                            ),
-                            onPressed: () {
-                              // Handle "Mes charges" button press
-                            },
-                            child: Text('Mes charges'),
-                          ),
-                          ElevatedButton(
-                            style: ElevatedButton.styleFrom(
-                              fixedSize: Size(120, 40), // Set a fixed size for the button
-                              primary: Colors.cyan, // Set the button color to cyan
-                            ),
-                            onPressed: () {
-                              // Handle "Mon profil" button press
-                            },
-                            child: Text('Mon profil'),
-                          ),
-                        ],
+              child: Align(
+                alignment: Alignment.bottomCenter,
+                child: Container(
+                  padding: EdgeInsets.all(16.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          fixedSize: Size(120, 40), // Set a fixed size for the button
+                          primary: Colors.cyan, // Set the button color to cyan
+                        ),
+                        onPressed: () {
+                          _showAddComponentDialog(context, 'Depenses');
+                        },
+                        child: Text('Depenses'),
                       ),
-                    ),
-                  ],
+                      ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          fixedSize: Size(120, 40), // Set a fixed size for the button
+                          primary: Colors.cyan, // Set the button color to cyan
+                        ),
+                        onPressed: () {
+                          _showAddComponentDialog(context, 'Charges');
+                        },
+                        child: Text('Charges'),
+                      ),
+                      ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          fixedSize: Size(120, 40), // Set a fixed size for the button
+                          primary: Colors.cyan, // Set the button color to cyan
+                        ),
+                        onPressed: () {
+                          _showAddComponentDialog(context, 'Profil');
+                        },
+                        child: Text('Profil'),
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ),
@@ -131,6 +128,7 @@ class _MyHomePageState extends State<MyHomePage> {
       ),
     );
   }
+
   List<GDPData> getChartData() {
     final List<GDPData> chartData = [
       GDPData('Loyer', 600),
@@ -140,10 +138,18 @@ class _MyHomePageState extends State<MyHomePage> {
       GDPData('Loyer', 600),
       GDPData('Courses', 250),
     ];
+    calculateRemainingSalary(chartData);
     return chartData;
   }
 
-  void _showAddComponentDialog(BuildContext context) {
+  void calculateRemainingSalary(List<GDPData> chartData) {
+    int totalCharges = chartData.fold(0, (sum, data) => sum + data.gdp);
+    remainingSalary = 15000 - totalCharges;
+  }
+
+  void _showAddComponentDialog(BuildContext context, String buttonLabel) {
+    if (buttonLabel != 'Charges') return; // Only show dialog for "Charges" button
+
     String componentName = '';
     int componentAmount = 0;
 
@@ -175,6 +181,7 @@ class _MyHomePageState extends State<MyHomePage> {
               onPressed: () {
                 setState(() {
                   _chartData.add(GDPData(componentName, componentAmount));
+                  calculateRemainingSalary(_chartData);
                 });
                 Navigator.of(context).pop();
               },
