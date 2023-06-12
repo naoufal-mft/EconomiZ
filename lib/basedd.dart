@@ -32,7 +32,7 @@ class basedd {
       idUser  INTEGER PRIMARY KEY AUTOINCREMENT,
       Nom TEXT NOT NULL,
       Prenom TEXT NOT NULL
-      
+      DoB DATE NOT NULL
     )
     
     ''');
@@ -86,6 +86,7 @@ class basedd {
     return response;
   }
 
+
   updateData(String sql) async {
     Database? mydb = await db;
     int response = await mydb!.rawUpdate(sql);
@@ -112,6 +113,7 @@ void main() async {
 
   basedd bdd= basedd();
   await bdd.initialDb();
+
 
   List<Map> result = await bdd.readData('SELECT * FROM auth');
   print('Read Data:');

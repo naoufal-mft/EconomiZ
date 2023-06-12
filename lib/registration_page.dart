@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'budget_page.dart';
 import 'basedd.dart';
 
@@ -18,7 +19,8 @@ class _RegistrationPageState extends State<RegistrationPage> with SingleTickerPr
   TextEditingController nomUtilisateurController = TextEditingController();
   TextEditingController motDePasseController = TextEditingController();
   TextEditingController confirmationMotDePasseController = TextEditingController();
-
+  late TextEditingController dateNaissanceEditingController;
+  DateTime? selectedDate;
   @override
   void initState() {
     super.initState();
@@ -34,13 +36,34 @@ class _RegistrationPageState extends State<RegistrationPage> with SingleTickerPr
     );
 
     _controleurAnimation.forward();
+    dateNaissanceEditingController = TextEditingController();
+
   }
 
   @override
   void dispose() {
     _controleurAnimation.dispose();
+    dateNaissanceEditingController.dispose();
     super.dispose();
   }
+  Future<void> _selectDate(BuildContext context) async {
+    final DateTime? pickedDate = await showDatePicker(
+      context: context,
+      initialDate: DateTime.now(),
+      firstDate: DateTime(1900),
+      lastDate: DateTime.now(),
+    );
+
+    if (pickedDate != null) {
+      setState(() {
+        selectedDate = pickedDate;
+      });
+      // Convertir la date en format SQL (YYYY-MM-DD)
+      String sqlFormattedDate = "${pickedDate.year}-${pickedDate.month.toString().padLeft(2, '0')}-${pickedDate.day.toString().padLeft(2, '0')}";
+
+    }
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -84,7 +107,6 @@ class _RegistrationPageState extends State<RegistrationPage> with SingleTickerPr
                 ),
                 SizedBox(height: 10.0),
                 TextField(
-                  controller: dateNaissanceController,
                   decoration: InputDecoration(
                     labelText: 'Date de naissance',
                     filled: true,
@@ -93,7 +115,14 @@ class _RegistrationPageState extends State<RegistrationPage> with SingleTickerPr
                       borderRadius: BorderRadius.circular(10.0),
                     ),
                   ),
+                  onTap: () {
+                    _selectDate(context);
+                  },
+                  readOnly: true,
+                  controller: dateNaissanceEditingController,
                 ),
+
+
                 SizedBox(height: 10.0),
                 TextField(
                   controller: emailController,
@@ -164,14 +193,18 @@ class _RegistrationPageState extends State<RegistrationPage> with SingleTickerPr
                         motDePasse.isNotEmpty &&
                         confirmationMotDePasse.isNotEmpty) {
                       if (motDePasse == confirmationMotDePasse) {
+                        print("hadaaaaaa wa7ad testtt ");
                         basedd database = basedd();
+                        print("hadaaaaaa wa7ad testtt2 ");
+                        String sqlFormattedDate = "${selectedDate!.year}-${selectedDate!.month.toString().padLeft(2, '0')}-${selectedDate!.day.toString().padLeft(2, '0')}";
                         // Insérer les données dans la table "coordonnees"
-                        String coordonneesInsertQuery = "INSERT INTO coordonnees(Nom, Prenom) VALUES('$nom', '$prenom')";
+                        String coordonneesInsertQuery = "INSERT INTO coordonnees(Nom, Prenom, DoB) VALUES('$nom', '$prenom', '$dateNaissance')";
                         int insertedCoordonneesId = await database.insertData(coordonneesInsertQuery);
                         // Insérer les données dans la table "auth"
                         String authInsertQuery = "INSERT INTO auth(iduser, mail, mdp) VALUES($insertedCoordonneesId, '$email', '$motDePasse')";
-                        int insertedAuthId = await database.insertData(authInsertQuery);
+                        await database.insertData(authInsertQuery);
                         // Rediriger vers la page de gestion du budget
+                        print("hadaaaaaa wa7ad testtt3 ");
                         Navigator.push(
                           context,
                           MaterialPageRoute(
