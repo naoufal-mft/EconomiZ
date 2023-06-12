@@ -57,10 +57,8 @@ class _RegistrationPageState extends State<RegistrationPage> with SingleTickerPr
     if (pickedDate != null) {
       setState(() {
         selectedDate = pickedDate;
+        dateNaissanceEditingController.text = DateFormat('dd/MM/yyyy').format(pickedDate);
       });
-      // Convertir la date en format SQL (YYYY-MM-DD)
-      String sqlFormattedDate = "${pickedDate.year}-${pickedDate.month.toString().padLeft(2, '0')}-${pickedDate.day.toString().padLeft(2, '0')}";
-
     }
   }
 
@@ -179,7 +177,6 @@ class _RegistrationPageState extends State<RegistrationPage> with SingleTickerPr
                     // Vérifier les informations de l'utilisateur
                     String nom = nomController.text;
                     String prenom = prenomController.text;
-                    String dateNaissance = dateNaissanceController.text;
                     String email = emailController.text;
                     String nomUtilisateur = nomUtilisateurController.text;
                     String motDePasse = motDePasseController.text;
@@ -187,7 +184,6 @@ class _RegistrationPageState extends State<RegistrationPage> with SingleTickerPr
 
                     if (nom.isNotEmpty &&
                         prenom.isNotEmpty &&
-                        dateNaissance.isNotEmpty &&
                         email.isNotEmpty &&
                         nomUtilisateur.isNotEmpty &&
                         motDePasse.isNotEmpty &&
@@ -198,7 +194,7 @@ class _RegistrationPageState extends State<RegistrationPage> with SingleTickerPr
                         print("hadaaaaaa wa7ad testtt2 ");
                         String sqlFormattedDate = "${selectedDate!.year}-${selectedDate!.month.toString().padLeft(2, '0')}-${selectedDate!.day.toString().padLeft(2, '0')}";
                         // Insérer les données dans la table "coordonnees"
-                        String coordonneesInsertQuery = "INSERT INTO coordonnees(Nom, Prenom, DoB) VALUES('$nom', '$prenom', '$dateNaissance')";
+                        String coordonneesInsertQuery = "INSERT INTO coordonnees(Nom, Prenom, DoB) VALUES('$nom', '$prenom', '$sqlFormattedDate')";
                         int insertedCoordonneesId = await database.insertData(coordonneesInsertQuery);
                         // Insérer les données dans la table "auth"
                         String authInsertQuery = "INSERT INTO auth(iduser, mail, mdp) VALUES($insertedCoordonneesId, '$email', '$motDePasse')";

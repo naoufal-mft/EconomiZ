@@ -31,10 +31,9 @@ class basedd {
     CREATE TABLE IF NOT EXISTS coordonnees (
       idUser  INTEGER PRIMARY KEY AUTOINCREMENT,
       Nom TEXT NOT NULL,
-      Prenom TEXT NOT NULL
+      Prenom TEXT NOT NULL,
       DoB DATE NOT NULL
-    )
-    
+    ) 
     ''');
     await db.execute('''
     CREATE TABLE IF NOT EXISTS auth (
