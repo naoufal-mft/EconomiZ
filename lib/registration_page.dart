@@ -189,9 +189,7 @@ class _RegistrationPageState extends State<RegistrationPage> with SingleTickerPr
                         motDePasse.isNotEmpty &&
                         confirmationMotDePasse.isNotEmpty) {
                       if (motDePasse == confirmationMotDePasse) {
-                        print("hadaaaaaa wa7ad testtt ");
                         basedd database = basedd();
-                        print("hadaaaaaa wa7ad testtt2 ");
                         String sqlFormattedDate = "${selectedDate!.year}-${selectedDate!.month.toString().padLeft(2, '0')}-${selectedDate!.day.toString().padLeft(2, '0')}";
                         // Insérer les données dans la table "coordonnees"
                         String coordonneesInsertQuery = "INSERT INTO coordonnees(Nom, Prenom, DoB) VALUES('$nom', '$prenom', '$sqlFormattedDate')";
@@ -200,7 +198,6 @@ class _RegistrationPageState extends State<RegistrationPage> with SingleTickerPr
                         String authInsertQuery = "INSERT INTO auth(iduser, mail, mdp) VALUES($insertedCoordonneesId, '$email', '$motDePasse')";
                         await database.insertData(authInsertQuery);
                         // Rediriger vers la page de gestion du budget
-                        print("hadaaaaaa wa7ad testtt3 ");
                         Navigator.push(
                           context,
                           MaterialPageRoute(
