@@ -88,7 +88,7 @@ class CustomLoginPage extends StatelessWidget {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => BudgetPage(),
+                      builder: (context) => RegistrationPage(),
                     ),
                   );
                 },

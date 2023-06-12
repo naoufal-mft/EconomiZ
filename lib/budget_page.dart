@@ -230,7 +230,7 @@ class _AmountDialogState extends State<AmountDialog> {
           },
           child: Text(
             'Confirmer',
-            style: TextStyle(color: Colors.orange),
+            style: TextStyle(color: Colors.teal.shade500),
           ),
         ),
         TextButton(
