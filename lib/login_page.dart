@@ -6,7 +6,7 @@ class CustomLoginPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color(0xFF2C2C2C),
+      backgroundColor: Colors.cyan.shade900,
       body: SafeArea(
         child: Padding(
           padding: EdgeInsets.all(20.0),
@@ -21,8 +21,8 @@ class CustomLoginPage extends StatelessWidget {
                     shaderCallback: (Rect bounds) {
                       return LinearGradient(
                         colors: [
-                          Colors.orange,
-                          Colors.orangeAccent.withOpacity(0.8),
+                          Colors.white,
+                          Colors.white38.withOpacity(0.8),
                           Colors.transparent,
                         ],
                         stops: [0.0, 0.4, 1.0],
@@ -31,7 +31,7 @@ class CustomLoginPage extends StatelessWidget {
                       ).createShader(bounds);
                     },
                     child: Image.asset(
-                      'assets/logo2.png',
+                      'assets/user.png',
                       width: 400.0,
                       height: 400.0,
                     ),
@@ -71,7 +71,7 @@ class CustomLoginPage extends StatelessWidget {
                   // Actions à effectuer lors de la connexion
                 },
                 style: ElevatedButton.styleFrom(
-                  primary: Colors.orange,
+                  primary: Colors.cyan,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(10.0),
                   ),
@@ -88,7 +88,7 @@ class CustomLoginPage extends StatelessWidget {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => RegistrationPage(),
+                      builder: (context) => BudgetPage(),
                     ),
                   );
                 },
@@ -118,7 +118,7 @@ class CustomLoginPage extends StatelessWidget {
                             },
                             child: Text(
                               'Fermer',
-                              style: TextStyle(color: Colors.orange),
+                              style: TextStyle(color: Colors.cyan),
                             ),
                           ),
                         ],

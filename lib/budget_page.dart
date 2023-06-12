@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'Charges_page.dart';
 
 class BudgetPage extends StatefulWidget {
   @override
@@ -13,33 +14,9 @@ class _BudgetPageState extends State<BudgetPage> {
     'Épargne': 0.0,
   };
 
-  Map<String, double> subcategoryAmounts = {
-    'Loyer': 0.0,
-    'Abonnements': 0.0,
-    // Ajoutez d'autres sous-catégories ici
-  };
-
   void addAmountToCategory(String categoryName, double amount) {
     setState(() {
       categoryAmounts.update(categoryName, (value) => value + amount);
-    });
-  }
-
-  void subtractAmountFromCategory(String categoryName, double amount) {
-    setState(() {
-      categoryAmounts.update(categoryName, (value) => value - amount);
-    });
-  }
-
-  void addAmountToSubcategory(String subcategoryName, double amount) {
-    setState(() {
-      subcategoryAmounts.update(subcategoryName, (value) => value + amount);
-    });
-  }
-
-  void subtractAmountFromSubcategory(String subcategoryName, double amount) {
-    setState(() {
-      subcategoryAmounts.update(subcategoryName, (value) => value - amount);
     });
   }
 
@@ -48,9 +25,9 @@ class _BudgetPageState extends State<BudgetPage> {
     return Scaffold(
       appBar: AppBar(
         title: Text('Gestion du Budget'),
-        backgroundColor: Colors.orange,
+        backgroundColor: Colors.cyan,
       ),
-      backgroundColor: Colors.white24, // Couleur de fond sombre
+      backgroundColor: Colors.cyan.shade900,
       body: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -62,7 +39,7 @@ class _BudgetPageState extends State<BudgetPage> {
                 style: TextStyle(
                   fontSize: 18.0,
                   fontWeight: FontWeight.bold,
-                  color: Colors.white, // Couleur du texte en blanc
+                  color: Colors.white,
                 ),
               ),
             ),
@@ -77,9 +54,6 @@ class _BudgetPageState extends State<BudgetPage> {
                     onAddAmount: (amount) {
                       addAmountToCategory('Revenus', amount);
                     },
-                    onSubtractAmount: (amount) {
-                      subtractAmountFromCategory('Revenus', amount);
-                    },
                   ),
                   SizedBox(height: 10.0),
                   CategoryItem(
@@ -89,22 +63,19 @@ class _BudgetPageState extends State<BudgetPage> {
                     onAddAmount: (amount) {
                       addAmountToCategory('Dépenses', amount);
                     },
-                    onSubtractAmount: (amount) {
-                      subtractAmountFromCategory('Dépenses', amount);
-                    },
                   ),
                   SizedBox(height: 10.0),
-                  SubcategoryItem(
-                    subcategoryName: 'Charges',
-
-                    subcategoryAmounts: subcategoryAmounts,
+                  CategoryItem(
+                    categoryName: 'Charges',
+                    amount: categoryAmounts['Charges']!,
                     icon: Icons.home,
-
-                    onAddAmount: (subcategoryName, amount) {
-                      addAmountToSubcategory(subcategoryName, amount);
-                    },
-                    onSubtractAmount: (subcategoryName, amount) {
-                      subtractAmountFromSubcategory(subcategoryName, amount);
+                    onAddAmount: (amount) {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => ChargesPage(),
+                        ),
+                      );
                     },
                   ),
                   SizedBox(height: 10.0),
@@ -114,9 +85,6 @@ class _BudgetPageState extends State<BudgetPage> {
                     icon: Icons.pie_chart,
                     onAddAmount: (amount) {
                       addAmountToCategory('Épargne', amount);
-                    },
-                    onSubtractAmount: (amount) {
-                      subtractAmountFromCategory('Épargne', amount);
                     },
                   ),
                 ],
@@ -134,21 +102,19 @@ class CategoryItem extends StatelessWidget {
   final double amount;
   final IconData icon;
   final Function(double) onAddAmount;
-  final Function(double) onSubtractAmount;
 
   CategoryItem({
     required this.categoryName,
     required this.amount,
     required this.icon,
     required this.onAddAmount,
-    required this.onSubtractAmount,
   });
 
   @override
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: categoryName == 'Charges' ? Colors.teal.shade500 : Colors.white,
         borderRadius: BorderRadius.circular(10.0),
         boxShadow: [
           BoxShadow(
@@ -163,23 +129,45 @@ class CategoryItem extends StatelessWidget {
         leading: Icon(
           icon,
           size: 40.0,
-          color: Colors.orangeAccent, // Couleur de l'icône en or
+          color: categoryName == 'Charges' ? Colors.white : Colors.cyan.shade900,
         ),
         title: Text(
           categoryName,
           style: TextStyle(
             fontSize: 18.0,
             fontWeight: FontWeight.bold,
+            color: categoryName == 'Charges' ? Colors.white : Colors.black,
           ),
         ),
         subtitle: Text(
           'Montant: \$${amount.toStringAsFixed(2)}',
           style: TextStyle(fontSize: 16.0),
         ),
-        trailing: Row(
+        trailing: categoryName == 'Charges'
+            ? ElevatedButton(
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => ChargesPage(),
+              ),
+            );
+          },
+          style: ElevatedButton.styleFrom(
+            primary: Colors.teal.shade900,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(10.0),
+            ),
+          ),
+          child: Text(
+            'Ajouter',
+            style: TextStyle(color: Colors.white),
+          ),
+        )
+            : Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            ElevatedButton(
+            IconButton(
               onPressed: () {
                 showDialog(
                   context: context,
@@ -188,130 +176,24 @@ class CategoryItem extends StatelessWidget {
                   ),
                 );
               },
-              style: ElevatedButton.styleFrom(
-                primary: Colors.orange,
-                shape: CircleBorder(),
-                padding: EdgeInsets.all(10.0),
-              ),
-              child: Icon(
-                Icons.add,
-                color: Colors.white,
-              ),
+              icon: Icon(Icons.add),
             ),
-            SizedBox(width: 10.0),
-            ElevatedButton(
+            IconButton(
               onPressed: () {
                 showDialog(
                   context: context,
                   builder: (context) => AmountDialog(
-                    onAmountChanged: onSubtractAmount,
+                    onAmountChanged: (amount) {
+                      onAddAmount(-amount);
+                    },
                   ),
                 );
               },
-              style: ElevatedButton.styleFrom(
-                primary: Colors.red,
-                shape: CircleBorder(),
-                padding: EdgeInsets.all(10.0),
-              ),
-              child: Icon(
-                Icons.remove,
-                color: Colors.white,
-              ),
+              icon: Icon(Icons.remove),
             ),
           ],
         ),
       ),
-    );
-  }
-}
-
-class SubcategoryItem extends StatelessWidget {
-  final String subcategoryName;
-  final Map<String, double> subcategoryAmounts;
-  final IconData icon;
-  final Function(String, double) onAddAmount;
-  final Function(String, double) onSubtractAmount;
-
-  SubcategoryItem({
-    required this.subcategoryName,
-    required this.subcategoryAmounts,
-    required this.icon,
-    required this.onAddAmount,
-    required this.onSubtractAmount,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return ExpansionTile(
-      leading: Icon(
-        icon,
-        size: 40.0,
-        color: Colors.orangeAccent, // Couleur de l'icône en or
-      ),
-      title: Text(
-        subcategoryName,
-        style: TextStyle(
-          fontSize: 18.0,
-          fontWeight: FontWeight.bold,
-        ),
-      ),
-      children: subcategoryAmounts.keys.map((String key) {
-        return ListTile(
-          title: Text(key),
-          subtitle: Text(
-            'Montant: \$${subcategoryAmounts[key]!.toStringAsFixed(2)}',
-            style: TextStyle(fontSize: 16.0),
-          ),
-          trailing: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              ElevatedButton(
-                onPressed: () {
-                  showDialog(
-                    context: context,
-                    builder: (context) => AmountDialog(
-                      onAmountChanged: (amount) {
-                        onAddAmount(key, amount);
-                      },
-                    ),
-                  );
-                },
-                style: ElevatedButton.styleFrom(
-                  primary: Colors.orange,
-                  shape: CircleBorder(),
-                  padding: EdgeInsets.all(10.0),
-                ),
-                child: Icon(
-                  Icons.add,
-                  color: Colors.white,
-                ),
-              ),
-              SizedBox(width: 10.0),
-              ElevatedButton(
-                onPressed: () {
-                  showDialog(
-                    context: context,
-                    builder: (context) => AmountDialog(
-                      onAmountChanged: (amount) {
-                        onSubtractAmount(key, amount);
-                      },
-                    ),
-                  );
-                },
-                style: ElevatedButton.styleFrom(
-                  primary: Colors.red,
-                  shape: CircleBorder(),
-                  padding: EdgeInsets.all(10.0),
-                ),
-                child: Icon(
-                  Icons.remove,
-                  color: Colors.white,
-                ),
-              ),
-            ],
-          ),
-        );
-      }).toList(),
     );
   }
 }
@@ -348,7 +230,7 @@ class _AmountDialogState extends State<AmountDialog> {
           },
           child: Text(
             'Confirmer',
-            style: TextStyle(color: Colors.orange), // Changer la couleur du texte en bleu
+            style: TextStyle(color: Colors.orange),
           ),
         ),
         TextButton(
@@ -357,10 +239,11 @@ class _AmountDialogState extends State<AmountDialog> {
           },
           child: Text(
             'Annuler',
-            style: TextStyle(color: Colors.red), // Changer la couleur du texte en bleu
+            style: TextStyle(color: Colors.red),
           ),
         ),
       ],
     );
   }
 }
+

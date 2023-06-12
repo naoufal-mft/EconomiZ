@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'budget_page.dart';
+import 'package:intl/intl.dart';
 
 class RegistrationPage extends StatefulWidget {
   @override
@@ -46,9 +47,9 @@ class _RegistrationPageState extends State<RegistrationPage> with SingleTickerPr
     return Scaffold(
       appBar: AppBar(
         title: Text('Inscription'),
-        backgroundColor: Colors.orange, // Couleur dorée
+        backgroundColor: Colors.cyan, // Couleur dorée
       ),
-      backgroundColor: Color(0xFF2C2C2C), // Couleur de fond sombre
+      backgroundColor: Colors.cyan.shade900, // Couleur de fond sombre
       body: SingleChildScrollView(
         child: Padding(
           padding: EdgeInsets.all(20.0),
@@ -91,7 +92,24 @@ class _RegistrationPageState extends State<RegistrationPage> with SingleTickerPr
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(10.0),
                     ),
+                    suffixIcon: Icon(Icons.calendar_today),
                   ),
+                  readOnly: true, // Pour empêcher la saisie manuelle de la date
+                  onTap: () async {
+                    DateTime? selectedDate = await showDatePicker(
+                      context: context,
+                      initialDate: DateTime.now(),
+                      firstDate: DateTime(1900),
+                      lastDate: DateTime.now(),
+                    );
+
+                    if (selectedDate != null) {
+                      String formattedDate = DateFormat('yyyy-MM-dd').format(selectedDate);
+                      setState(() {
+                        dateNaissanceController.text = formattedDate;
+                      });
+                    }
+                  },
                 ),
                 SizedBox(height: 10.0),
                 TextField(
@@ -208,7 +226,7 @@ class _RegistrationPageState extends State<RegistrationPage> with SingleTickerPr
                     }
                   },
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.orange, // Couleur dorée
+                    backgroundColor: Colors.cyan, // Couleur dorée
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(10.0),
                     ),
