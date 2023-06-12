@@ -31,8 +31,8 @@ class basedd {
     CREATE TABLE IF NOT EXISTS coordonnees (
       idUser  INTEGER PRIMARY KEY AUTOINCREMENT,
       Nom TEXT NOT NULL,
-      Prenom TEXT NOT NULL
-      
+      Prenom TEXT NOT NULL,
+      DoB DATE  NOT NULL
     )
     
     ''');
@@ -119,7 +119,7 @@ void main() async {
     print(row);
   });
 
-
+  bdd.insertData("INSERT INTO coordonnees(Nom, Prenom,DoB) VALUES('John', 'Doe','14-08-2002')");
 
   List<Map> result2 = await bdd.readData('SELECT * FROM coordonnees');
   print('Read Data:');
