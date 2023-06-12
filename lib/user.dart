@@ -17,23 +17,10 @@ class User{
 
     List<double> percentageValues = [];
     for (double percentage in percentages) {
-      double value = (percentage / 100) * salary;
+      double value = (percentage * 100) / salary;
       percentageValues.add(value);
     }
     return percentageValues;
-  }
-
-  void main() {
-    // Exemple d'utilisation de la fonction
-    double salary = 5000.0;
-    List<double> percentages = [10.0, 20.0, 30.0];
-
-    List<double> percentageValues = calculatePercentageValues(salary, percentages);
-
-    /*print("Salaire : $salary");
-    print("Pourcentages : $percentages");
-    print("Valeurs en pourcentage du salaire : $percentageValues");
-     */
   }
 
 
