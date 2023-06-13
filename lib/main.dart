@@ -3,7 +3,7 @@ import 'login_page.dart';
 import 'home_page.dart';
 import 'depenses_page.dart';
 
-void main() {
+void main() async {
   runApp(MyApp());
 }
 

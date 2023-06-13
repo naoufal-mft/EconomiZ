@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 
+import 'basedd.dart';
+var charge=0;
 class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -29,11 +31,20 @@ class _MyHomePageState extends State<MyHomePage> {
   TooltipBehavior _tooltipBehavior = TooltipBehavior(enable: true);
 
   @override
+  //void initState()   {
+    //_chartData =  getChartData() as List<GDPData>;
+    //super.initState();
+  //}
   void initState() {
-    _chartData = getChartData();
     super.initState();
+    initializeChartData();
   }
-
+  Future<void> initializeChartData() async {
+    List<GDPData> data = await getChartData();
+    setState(() {
+      _chartData = data;
+    });
+  }
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -129,17 +140,35 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 
-  List<GDPData> getChartData() {
-    final List<GDPData> chartData = [
-      GDPData('Loyer', 600),
-      GDPData('Courses', 250),
-      GDPData('Loyer', 600),
-      GDPData('Courses', 250),
-      GDPData('Loyer', 600),
-      GDPData('Courses', 250),
+   Future<List<GDPData>> getChartData()    async {
+
+    var iduser=1;
+    var loyer='loyer';
+    var courses='courses';
+    String prix_loyer;
+    String prix_Course;
+    basedd bdd = await basedd();
+    await bdd.initialDb();
+
+    List<Map> result1=await bdd.readData('SELECT * FROM charge WHERE iduser=5 and nom_charge="loyer"' );
+    List<Map> result2=await bdd.readData('SELECT * FROM charge WHERE iduser=5 and nom_charge="courses"');
+    print("read");
+    prix_loyer = result1[0]['prix'];
+    prix_Course = result2[0]['prix'];
+    print(prix_loyer);
+    print(prix_Course);
+
+      final  List<GDPData> chartData = [
+      GDPData(loyer, int.parse(prix_loyer)),
+
+      GDPData(courses, int.parse(prix_Course)),
+      GDPData(loyer, int.parse(prix_loyer)),
+      GDPData(courses, int.parse(prix_Course)),
+      GDPData(loyer, int.parse(prix_loyer)),
+      GDPData(courses, int.parse(prix_Course)),
     ];
     calculateRemainingSalary(chartData);
-    return chartData;
+    return  chartData;
   }
 
   void calculateRemainingSalary(List<GDPData> chartData) {
