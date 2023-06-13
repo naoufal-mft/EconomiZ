@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'Charges_page.dart';
+import 'basedd.dart';
 
 class BudgetPage extends StatefulWidget {
   @override
@@ -13,15 +14,25 @@ class _BudgetPageState extends State<BudgetPage> {
     'Charges': 0.0,
     'Épargne': 0.0,
   };
-
+  Future<basedd> init_bdd() async {
+    basedd bdd = await basedd();
+    await bdd.initialDb();
+    return bdd as basedd;
+  }
   void addAmountToCategory(String categoryName, double amount) {
+
     setState(() {
       categoryAmounts.update(categoryName, (value) => value + amount);
     });
   }
-
+  Future<void> Addrevenu(amount) async {
+    basedd bd = await init_bdd();
+    await bd.updateData("UPDATE info SET revenu=$amount WHERE idinfo=1");
+}
   @override
   Widget build(BuildContext context) {
+
+
     return Scaffold(
       appBar: AppBar(
         title: Text('Gestion du Budget'),
@@ -51,8 +62,10 @@ class _BudgetPageState extends State<BudgetPage> {
                     categoryName: 'Revenus',
                     amount: categoryAmounts['Revenus']!,
                     icon: Icons.attach_money,
-                    onAddAmount: (amount) {
+                    onAddAmount: (amount) async {
+
                       addAmountToCategory('Revenus', amount);
+                      Addrevenu(amount);
                     },
                   ),
                   SizedBox(height: 10.0),
