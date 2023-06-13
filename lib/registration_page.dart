@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'budget_page.dart';
-import 'basedd.dart'
+import 'basedd.dart';
 import 'package:intl/intl.dart';
 
 class RegistrationPage extends StatefulWidget {
