@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'Charges_page.dart';
+import 'basedd.dart';
 
 class BudgetPage extends StatefulWidget {
   @override
@@ -209,6 +210,7 @@ class AmountDialog extends StatefulWidget {
 
 class _AmountDialogState extends State<AmountDialog> {
   TextEditingController amountController = TextEditingController();
+  TextEditingController revenusController = TextEditingController(); // Nouveau contrôleur pour le champ revenus
 
   @override
   Widget build(BuildContext context) {

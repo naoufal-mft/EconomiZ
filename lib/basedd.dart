@@ -105,6 +105,17 @@ class basedd {
   }
 
 
+
+  Future<bool> checkExistingEmail(String email) async {
+  Database? mydb = await db;
+  List<Map> result = await mydb!.rawQuery("SELECT * FROM auth WHERE mail = '$email'");
+  return result.isNotEmpty;
+  }
+
+
+
+
+
 }
 
 void main() async {

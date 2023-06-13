@@ -9,6 +9,7 @@ class RegistrationPage extends StatefulWidget {
 }
 
 class _RegistrationPageState extends State<RegistrationPage> with SingleTickerProviderStateMixin {
+  final basedd dbManager = basedd();
   late AnimationController _controleurAnimation;
   late Animation<double> _animation;
 
@@ -191,6 +192,28 @@ class _RegistrationPageState extends State<RegistrationPage> with SingleTickerPr
                       if (motDePasse == confirmationMotDePasse) {
                         basedd database = basedd();
                         String sqlFormattedDate = "${selectedDate!.year}-${selectedDate!.month.toString().padLeft(2, '0')}-${selectedDate!.day.toString().padLeft(2, '0')}";
+
+                        // Vérifier si l'adresse e-mail existe déjà
+                        bool emailExists = await database.checkExistingEmail(email);
+                        if (emailExists) {
+                          showDialog(
+                            context: context,
+                            builder: (context) => AlertDialog(
+                              title: Text('Erreur'),
+                              content: Text('Ce compte existe déjà'),
+                              actions: [
+                                TextButton(
+                                  onPressed: () {
+                                    Navigator.pop(context);
+                                  },
+                                  child: Text('OK'),
+                                ),
+                              ],
+                            ),
+                          );
+                          return; // Arrêter l'exécution de la méthode
+                        }
+
                         // Insérer les données dans la table "coordonnees"
                         String coordonneesInsertQuery = "INSERT INTO coordonnees(Nom, Prenom, DoB) VALUES('$nom', '$prenom', '$sqlFormattedDate')";
                         int insertedCoordonneesId = await database.insertData(coordonneesInsertQuery);
