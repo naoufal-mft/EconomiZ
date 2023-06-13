@@ -40,7 +40,16 @@ class _RegistrationPageState extends State<RegistrationPage>
     'Région 5'
   ];
 
-  TextEditingController nbreEnfantsController = TextEditingController(); // Ajout du champ de texte pour le nombre d'enfants
+  TextEditingController nbreEnfantsController =
+  TextEditingController(); // Ajout du champ de texte pour le nombre d'enfants
+
+  String? selectedQuestion;
+  List<String> questions = [
+    'Quel est le nom de votre ville natale ?',
+    'Quel est le nom de votre meilleur ami ?',
+  ];
+
+  TextEditingController reponseQuestionController = TextEditingController();
 
   @override
   void initState() {
@@ -89,7 +98,6 @@ class _RegistrationPageState extends State<RegistrationPage>
         title: Text('Inscription'),
         backgroundColor: Colors.cyan.shade700,
       ),
-
       body: SingleChildScrollView(
         child: Container(
           decoration: BoxDecoration(
@@ -203,7 +211,32 @@ class _RegistrationPageState extends State<RegistrationPage>
                 TextFormField(
                   controller: nbreEnfantsController,
                   decoration: InputDecoration(
-                    labelText: 'Nombre d\'enfants', // Libellé du champ de texte pour le nombre d'enfants
+                    labelText: 'Nombre d\'enfants',
+                  ),
+                ),
+                SizedBox(height: 20.0),
+                DropdownButtonFormField<String>(
+                  value: selectedQuestion,
+                  onChanged: (newValue) {
+                    setState(() {
+                      selectedQuestion = newValue;
+                    });
+                  },
+                  items: questions.map((question) {
+                    return DropdownMenuItem<String>(
+                      value: question,
+                      child: Text(question),
+                    );
+                  }).toList(),
+                  decoration: InputDecoration(
+                    labelText: 'Question pour récupérer le mot de passe',
+                  ),
+                ),
+                SizedBox(height: 20.0),
+                TextFormField(
+                  controller: reponseQuestionController,
+                  decoration: InputDecoration(
+                    labelText: 'Réponse à la question',
                   ),
                 ),
                 SizedBox(height: 20.0),
@@ -217,6 +250,7 @@ class _RegistrationPageState extends State<RegistrationPage>
                     String motDePasse = motDePasseController.text;
                     String confirmationMotDePasse =
                         confirmationMotDePasseController.text;
+                    String reponseQuestion = reponseQuestionController.text;
 
                     if (nom.isNotEmpty &&
                         prenom.isNotEmpty &&
@@ -225,7 +259,9 @@ class _RegistrationPageState extends State<RegistrationPage>
                         motDePasse.isNotEmpty &&
                         confirmationMotDePasse.isNotEmpty &&
                         selectedSituationFamiliale != null &&
-                        selectedRegion != null) {
+                        selectedRegion != null &&
+                        selectedQuestion != null &&
+                        reponseQuestion.isNotEmpty) {
                       if (motDePasse == confirmationMotDePasse) {
                         // Rediriger vers la page de gestion du budget
                         Navigator.push(
@@ -240,7 +276,8 @@ class _RegistrationPageState extends State<RegistrationPage>
                           context: context,
                           builder: (context) => AlertDialog(
                             title: Text('Erreur'),
-                            content: Text('Les mots de passe ne correspondent pas'),
+                            content:
+                            Text('Les mots de passe ne correspondent pas'),
                             actions: [
                               TextButton(
                                 onPressed: () {
