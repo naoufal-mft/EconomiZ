@@ -32,13 +32,13 @@ dependencies:
     sdk: flutter
   mysql1: ^0.20.0
   sqflite: ^2.0.2
-  intl: ^0.17.0
   image_picker: ^0.8.4+4
 
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.2
+  intl: ^0.17.0
 
 dev_dependencies:
   flutter_test:
@@ -60,6 +60,7 @@ flutter:
   assets:
     - assets/logo2.png
     - assets/IMG_0191.JPG
+    - assets/user.png
 
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in

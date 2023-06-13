@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'Charges_page.dart';
 
 class BudgetPage extends StatefulWidget {
   @override
@@ -24,9 +25,9 @@ class _BudgetPageState extends State<BudgetPage> {
     return Scaffold(
       appBar: AppBar(
         title: Text('Gestion du Budget'),
-        backgroundColor: Color(0xFFFFD700),
+        backgroundColor: Colors.cyan,
       ),
-      backgroundColor: Color(0xFF2C2C2C), // Couleur de fond sombre
+      backgroundColor: Colors.cyan.shade900,
       body: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -38,7 +39,7 @@ class _BudgetPageState extends State<BudgetPage> {
                 style: TextStyle(
                   fontSize: 18.0,
                   fontWeight: FontWeight.bold,
-                  color: Colors.white, // Couleur du texte en blanc
+                  color: Colors.white,
                 ),
               ),
             ),
@@ -69,7 +70,12 @@ class _BudgetPageState extends State<BudgetPage> {
                     amount: categoryAmounts['Charges']!,
                     icon: Icons.home,
                     onAddAmount: (amount) {
-                      addAmountToCategory('Charges', amount);
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => ChargesPage(),
+                        ),
+                      );
                     },
                   ),
                   SizedBox(height: 10.0),
@@ -108,7 +114,7 @@ class CategoryItem extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: categoryName == 'Charges' ? Colors.teal.shade500 : Colors.white,
         borderRadius: BorderRadius.circular(10.0),
         boxShadow: [
           BoxShadow(
@@ -123,37 +129,69 @@ class CategoryItem extends StatelessWidget {
         leading: Icon(
           icon,
           size: 40.0,
-          color: Color(0xFFFFD700), // Couleur de l'icône en or
+          color: categoryName == 'Charges' ? Colors.white : Colors.cyan.shade900,
         ),
         title: Text(
           categoryName,
           style: TextStyle(
             fontSize: 18.0,
             fontWeight: FontWeight.bold,
+            color: categoryName == 'Charges' ? Colors.white : Colors.black,
           ),
         ),
         subtitle: Text(
           'Montant: \$${amount.toStringAsFixed(2)}',
           style: TextStyle(fontSize: 16.0),
         ),
-        trailing: ElevatedButton(
+        trailing: categoryName == 'Charges'
+            ? ElevatedButton(
           onPressed: () {
-            showDialog(
-              context: context,
-              builder: (context) => AmountDialog(
-                onAddAmount: onAddAmount,
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => ChargesPage(),
               ),
             );
           },
           style: ElevatedButton.styleFrom(
-            primary: Color(0xFFFFD700),
-            shape: CircleBorder(),
-            padding: EdgeInsets.all(10.0),
+            primary: Colors.teal.shade900,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(10.0),
+            ),
           ),
-          child: Icon(
-            Icons.add,
-            color: Colors.white,
+          child: Text(
+            'Ajouter',
+            style: TextStyle(color: Colors.white),
           ),
+        )
+            : Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            IconButton(
+              onPressed: () {
+                showDialog(
+                  context: context,
+                  builder: (context) => AmountDialog(
+                    onAmountChanged: onAddAmount,
+                  ),
+                );
+              },
+              icon: Icon(Icons.add),
+            ),
+            IconButton(
+              onPressed: () {
+                showDialog(
+                  context: context,
+                  builder: (context) => AmountDialog(
+                    onAmountChanged: (amount) {
+                      onAddAmount(-amount);
+                    },
+                  ),
+                );
+              },
+              icon: Icon(Icons.remove),
+            ),
+          ],
         ),
       ),
     );
@@ -161,9 +199,9 @@ class CategoryItem extends StatelessWidget {
 }
 
 class AmountDialog extends StatefulWidget {
-  final Function(double) onAddAmount;
+  final Function(double) onAmountChanged;
 
-  AmountDialog({required this.onAddAmount});
+  AmountDialog({required this.onAmountChanged});
 
   @override
   _AmountDialogState createState() => _AmountDialogState();
@@ -175,7 +213,7 @@ class _AmountDialogState extends State<AmountDialog> {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: Text('Ajouter un Montant'),
+      title: Text('Modifier le Montant'),
       content: TextField(
         controller: amountController,
         keyboardType: TextInputType.number,
@@ -187,18 +225,25 @@ class _AmountDialogState extends State<AmountDialog> {
         TextButton(
           onPressed: () {
             double amount = double.tryParse(amountController.text) ?? 0.0;
-            widget.onAddAmount(amount);
+            widget.onAmountChanged(amount);
             Navigator.pop(context);
           },
-          child: Text('Ajouter'),
+          child: Text(
+            'Confirmer',
+            style: TextStyle(color: Colors.teal.shade500),
+          ),
         ),
         TextButton(
           onPressed: () {
             Navigator.pop(context);
           },
-          child: Text('Annuler'),
+          child: Text(
+            'Annuler',
+            style: TextStyle(color: Colors.red),
+          ),
         ),
       ],
     );
   }
 }
+
