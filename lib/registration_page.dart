@@ -68,9 +68,9 @@ class _RegistrationPageState extends State<RegistrationPage> with SingleTickerPr
     return Scaffold(
       appBar: AppBar(
         title: Text('Inscription'),
-        backgroundColor: Color(0xFFFFD700), // Couleur dorée
+        backgroundColor: Colors.cyan, // Couleur dorée
       ),
-      backgroundColor: Color(0xFF2C2C2C), // Couleur de fond sombre
+      backgroundColor: Colors.cyan.shade900, // Couleur de fond sombre
       body: SingleChildScrollView(
         child: Padding(
           padding: EdgeInsets.all(20.0),
@@ -242,7 +242,7 @@ class _RegistrationPageState extends State<RegistrationPage> with SingleTickerPr
                     }
                   },
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Color(0xFFFFD700), // Couleur dorée
+                    backgroundColor: Colors.cyan, // Couleur dorée
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(10.0),
                     ),

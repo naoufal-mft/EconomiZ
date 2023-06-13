@@ -122,7 +122,8 @@ void main() async {
   print('Read Data:');
   result.forEach((row) {
     print(row);
-  });
+  }
+  );
 
   List<Map> result2 = await bdd.readData('SELECT * FROM coordonnees');
   print('Read Data:');
