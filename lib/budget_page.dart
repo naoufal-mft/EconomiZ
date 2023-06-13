@@ -246,3 +246,4 @@ class _AmountDialogState extends State<AmountDialog> {
     );
   }
 }
+

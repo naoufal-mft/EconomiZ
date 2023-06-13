@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import 'budget_page.dart';
 import 'basedd.dart';
+import 'package:intl/intl.dart';
 
 class RegistrationPage extends StatefulWidget {
   @override
@@ -21,6 +21,31 @@ class _RegistrationPageState extends State<RegistrationPage> with SingleTickerPr
   TextEditingController confirmationMotDePasseController = TextEditingController();
   late TextEditingController dateNaissanceEditingController;
   DateTime? selectedDate;
+  TextEditingController confirmationMotDePasseController =
+  TextEditingController();
+
+  DateTime? selectedDate;
+  TextEditingController dateNaissanceController = TextEditingController();
+
+  String? selectedSituationFamiliale;
+  List<String> situationsFamiliales = [
+    'Célibataire',
+    'Marié(e)',
+    'Divorcé(e)',
+    'Veuf/Veuve'
+  ];
+
+  String? selectedRegion;
+  List<String> regions = [
+    'Région 1',
+    'Région 2',
+    'Région 3',
+    'Région 4',
+    'Région 5'
+  ];
+
+  TextEditingController nbreEnfantsController = TextEditingController(); // Ajout du champ de texte pour le nombre d'enfants
+
   @override
   void initState() {
     super.initState();
@@ -68,11 +93,18 @@ class _RegistrationPageState extends State<RegistrationPage> with SingleTickerPr
     return Scaffold(
       appBar: AppBar(
         title: Text('Inscription'),
-        backgroundColor: Colors.cyan, // Couleur dorée
+        backgroundColor: Color(0xFFFFD700), // Couleur dorée
       ),
-      backgroundColor: Colors.cyan.shade900, // Couleur de fond sombre
+      backgroundColor: Color(0xFF2C2C2C), // Couleur de fond sombre
       body: SingleChildScrollView(
-        child: Padding(
+        child: Container(
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+              colors: [Colors.cyan.shade300, Colors.cyan.shade50],
+            ),
+          ),
           padding: EdgeInsets.all(20.0),
           child: FadeTransition(
             opacity: _animation,
@@ -80,7 +112,7 @@ class _RegistrationPageState extends State<RegistrationPage> with SingleTickerPr
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 // Champs de texte pour les informations de l'utilisateur
-                TextField(
+                TextFormField(
                   controller: nomController,
                   decoration: InputDecoration(
                     labelText: 'Nom',
@@ -91,8 +123,8 @@ class _RegistrationPageState extends State<RegistrationPage> with SingleTickerPr
                     ),
                   ),
                 ),
-                SizedBox(height: 10.0),
-                TextField(
+                SizedBox(height: 20.0),
+                TextFormField(
                   controller: prenomController,
                   decoration: InputDecoration(
                     labelText: 'Prénom',
@@ -105,6 +137,7 @@ class _RegistrationPageState extends State<RegistrationPage> with SingleTickerPr
                 ),
                 SizedBox(height: 10.0),
                 TextField(
+                  controller: dateNaissanceController,
                   decoration: InputDecoration(
                     labelText: 'Date de naissance',
                     filled: true,
@@ -113,14 +146,7 @@ class _RegistrationPageState extends State<RegistrationPage> with SingleTickerPr
                       borderRadius: BorderRadius.circular(10.0),
                     ),
                   ),
-                  onTap: () {
-                    _selectDate(context);
-                  },
-                  readOnly: true,
-                  controller: dateNaissanceEditingController,
                 ),
-
-
                 SizedBox(height: 10.0),
                 TextField(
                   controller: emailController,
@@ -133,8 +159,8 @@ class _RegistrationPageState extends State<RegistrationPage> with SingleTickerPr
                     ),
                   ),
                 ),
-                SizedBox(height: 10.0),
-                TextField(
+                SizedBox(height: 20.0),
+                TextFormField(
                   controller: nomUtilisateurController,
                   decoration: InputDecoration(
                     labelText: 'Nom d\'utilisateur',
@@ -145,8 +171,8 @@ class _RegistrationPageState extends State<RegistrationPage> with SingleTickerPr
                     ),
                   ),
                 ),
-                SizedBox(height: 10.0),
-                TextField(
+                SizedBox(height: 20.0),
+                TextFormField(
                   controller: motDePasseController,
                   decoration: InputDecoration(
                     labelText: 'Mot de passe',
@@ -158,8 +184,8 @@ class _RegistrationPageState extends State<RegistrationPage> with SingleTickerPr
                   ),
                   obscureText: true,
                 ),
-                SizedBox(height: 10.0),
-                TextField(
+                SizedBox(height: 20.0),
+                TextFormField(
                   controller: confirmationMotDePasseController,
                   decoration: InputDecoration(
                     labelText: 'Confirmation du mot de passe',
@@ -173,30 +199,27 @@ class _RegistrationPageState extends State<RegistrationPage> with SingleTickerPr
                 ),
                 SizedBox(height: 20.0),
                 ElevatedButton(
-                  onPressed: () async {
+                  onPressed: () {
                     // Vérifier les informations de l'utilisateur
                     String nom = nomController.text;
                     String prenom = prenomController.text;
+                    String dateNaissance = dateNaissanceController.text;
                     String email = emailController.text;
                     String nomUtilisateur = nomUtilisateurController.text;
                     String motDePasse = motDePasseController.text;
-                    String confirmationMotDePasse = confirmationMotDePasseController.text;
+                    String confirmationMotDePasse =
+                        confirmationMotDePasseController.text;
 
                     if (nom.isNotEmpty &&
                         prenom.isNotEmpty &&
+                        dateNaissance.isNotEmpty &&
                         email.isNotEmpty &&
                         nomUtilisateur.isNotEmpty &&
                         motDePasse.isNotEmpty &&
-                        confirmationMotDePasse.isNotEmpty) {
+                        confirmationMotDePasse.isNotEmpty &&
+                        selectedSituationFamiliale != null &&
+                        selectedRegion != null) {
                       if (motDePasse == confirmationMotDePasse) {
-                        basedd database = basedd();
-                        String sqlFormattedDate = "${selectedDate!.year}-${selectedDate!.month.toString().padLeft(2, '0')}-${selectedDate!.day.toString().padLeft(2, '0')}";
-                        // Insérer les données dans la table "coordonnees"
-                        String coordonneesInsertQuery = "INSERT INTO coordonnees(Nom, Prenom, DoB) VALUES('$nom', '$prenom', '$sqlFormattedDate')";
-                        int insertedCoordonneesId = await database.insertData(coordonneesInsertQuery);
-                        // Insérer les données dans la table "auth"
-                        String authInsertQuery = "INSERT INTO auth(iduser, mail, mdp) VALUES($insertedCoordonneesId, '$email', '$motDePasse')";
-                        await database.insertData(authInsertQuery);
                         // Rediriger vers la page de gestion du budget
                         Navigator.push(
                           context,
@@ -242,9 +265,9 @@ class _RegistrationPageState extends State<RegistrationPage> with SingleTickerPr
                     }
                   },
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.cyan, // Couleur dorée
+                    backgroundColor: Colors.cyan.shade800,
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10.0),
+                      borderRadius: BorderRadius.circular(50.0),
                     ),
                     padding: EdgeInsets.symmetric(vertical: 15.0),
                   ),

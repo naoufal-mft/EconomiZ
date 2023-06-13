@@ -43,16 +43,20 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.transparent, // Changer la couleur d'arrière-plan en transparent
+      backgroundColor: Colors.transparent,
       body: Container(
         decoration: BoxDecoration(
           gradient: LinearGradient(
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
             colors: [
-              Color(0xFF2C5364), // Couleur de dégradé en haut
-              Color(0xFF0F2027), // Couleur de dégradé en bas
+              Colors.cyan.shade900,
+              Colors.cyan.shade500,
             ],
+          ),
+          borderRadius: BorderRadius.only(
+            bottomLeft: Radius.circular(40),
+            bottomRight: Radius.circular(40),
           ),
         ),
         child: Center(
@@ -61,27 +65,15 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
             children: [
               FadeTransition(
                 opacity: _animation,
-                child: Icon(
-                  Icons.pie_chart,
-                  size: 80,
-                  color: Colors.white,
+                child: Image.asset(
+                  'assets/eco.gif', // Chemin vers le fichier GIF
+                  width: 520,
+                  height: 420,
                 ),
               ),
-              SizedBox(height: 30),
-              FadeTransition(
-                opacity: _animation,
-                child: Text(
-                  'EconomiZ',
-                  style: TextStyle(
-                    fontSize: 24,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white,
-                  ),
-                ),
-              ),
-              SizedBox(height: 32),
+              SizedBox(height: 4),
               ScaleTransition(
-                scale: _buttonAnimation, // Utilisation de la variable _buttonAnimation
+                scale: _buttonAnimation,
                 child: ElevatedButton(
                   onPressed: () {
                     Navigator.pushReplacement(
@@ -89,10 +81,15 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
                       MaterialPageRoute(builder: (context) => CustomLoginPage()),
                     );
                   },
-                  child: Text(
-                    'Commencer',
-                    style: TextStyle(fontSize: 18),
+                  style: ElevatedButton.styleFrom(
+                    primary: Colors.cyan.shade900,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(30),
+                    ),
+                    padding: EdgeInsets.symmetric(vertical: 16, horizontal: 32),
+                    textStyle: TextStyle(fontSize: 28),
                   ),
+                  child: Text('Commencer'),
                 ),
               ),
             ],
