@@ -113,19 +113,25 @@ void main() async {
   basedd bdd= basedd();
   await bdd.initialDb();
 
-  List<Map> result = await bdd.readData('SELECT * FROM auth');
+  bdd.insertData('INSERT INTO coordonnees(nom,prenom) VALUES("Xlo","Xlo")');
+  String sql = 'INSERT INTO charge(idcharge,nom_charge,prix,type,iduser) VALUES("1","creme","200","fixe","1")';
+  sql = 'INSERT INTO charge(idcharge,nom_charge,prix,type,iduser) VALUES("3","lame","500","variable","3")';
+  bdd.insertData(sql);
+
+  List<Map> result = await bdd.readData('SELECT * FROM charge');
   print('Read Data:');
   result.forEach((row) {
     print(row);
   });
 
-
-
   List<Map> result2 = await bdd.readData('SELECT * FROM coordonnees');
   print('Read Data:');
+  var a = Map();
   result2.forEach((row) {
-    print(row);
+    a= row;
+    print(a);
   });
+
 
 
 }
