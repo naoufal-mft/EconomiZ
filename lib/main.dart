@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'login_page.dart'; // Importez le fichier login_page.dart que vous avez créé
+import 'parametre.dart';
 
 void main() {
   runApp(MyApp());
@@ -9,11 +9,43 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Mon Application',
+      title: 'Votre Application',
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: CustomLoginPage(), // Utilisez la page de connexion personnalisée que vous avez créée
+      home: HomePage(),
+    );
+  }
+}
+
+class HomePage extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return DefaultTabController(
+      length: 5,
+      child: Scaffold(
+        appBar: AppBar(
+          title: Text('Mon application'),
+          bottom: TabBar(
+            tabs: [
+              Tab(icon: Icon(Icons.person)),
+              Tab(icon: Icon(Icons.lock)),
+              Tab(icon: Icon(Icons.notifications)),
+              Tab(icon: Icon(Icons.security)),
+              Tab(icon: Icon(Icons.language)),
+            ],
+          ),
+        ),
+        body: TabBarView(
+          children: [
+            MonProfilPage(),
+            MotDePassePage(),
+            PreferenceNotificationPage(),
+            ConfidentialitePage(),
+            LanguePage(),
+          ],
+        ),
+      ),
     );
   }
 }
