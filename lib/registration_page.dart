@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'budget_page.dart';
 import 'basedd.dart';
-import 'package:intl/intl.dart';
 
 class RegistrationPage extends StatefulWidget {
   @override
@@ -14,19 +14,12 @@ class _RegistrationPageState extends State<RegistrationPage> with SingleTickerPr
 
   TextEditingController nomController = TextEditingController();
   TextEditingController prenomController = TextEditingController();
-  TextEditingController dateNaissanceController = TextEditingController();
   TextEditingController emailController = TextEditingController();
   TextEditingController nomUtilisateurController = TextEditingController();
   TextEditingController motDePasseController = TextEditingController();
   TextEditingController confirmationMotDePasseController = TextEditingController();
-  late TextEditingController dateNaissanceEditingController;
-  DateTime? selectedDate;
-  TextEditingController confirmationMotDePasseController =
-  TextEditingController();
-
   DateTime? selectedDate;
   TextEditingController dateNaissanceController = TextEditingController();
-
   String? selectedSituationFamiliale;
   List<String> situationsFamiliales = [
     'Célibataire',
@@ -39,12 +32,19 @@ class _RegistrationPageState extends State<RegistrationPage> with SingleTickerPr
   List<String> regions = [
     'Région 1',
     'Région 2',
-    'Région 3',
-    'Région 4',
-    'Région 5'
+    'Région 3'
   ];
 
-  TextEditingController nbreEnfantsController = TextEditingController(); // Ajout du champ de texte pour le nombre d'enfants
+  TextEditingController nbreEnfantsController =
+  TextEditingController(); // Ajout du champ de texte pour le nombre d'enfants
+
+  String? selectedQuestion;
+  List<String> questions = [
+    'Quel est le nom de votre ville natale ?',
+    'Quel est le nom de votre meilleur ami ?',
+  ];
+
+  TextEditingController reponseQuestionController = TextEditingController();
 
   @override
   void initState() {
@@ -61,14 +61,11 @@ class _RegistrationPageState extends State<RegistrationPage> with SingleTickerPr
     );
 
     _controleurAnimation.forward();
-    dateNaissanceEditingController = TextEditingController();
-
   }
 
   @override
   void dispose() {
     _controleurAnimation.dispose();
-    dateNaissanceEditingController.dispose();
     super.dispose();
   }
   Future<void> _selectDate(BuildContext context) async {
@@ -82,10 +79,12 @@ class _RegistrationPageState extends State<RegistrationPage> with SingleTickerPr
     if (pickedDate != null) {
       setState(() {
         selectedDate = pickedDate;
-        dateNaissanceEditingController.text = DateFormat('dd/MM/yyyy').format(pickedDate);
+        dateNaissanceController.text =
+            DateFormat('dd/MM/yyyy').format(selectedDate!);
       });
     }
   }
+
 
 
   @override
@@ -93,9 +92,8 @@ class _RegistrationPageState extends State<RegistrationPage> with SingleTickerPr
     return Scaffold(
       appBar: AppBar(
         title: Text('Inscription'),
-        backgroundColor: Color(0xFFFFD700), // Couleur dorée
+        backgroundColor: Colors.cyan.shade700,
       ),
-      backgroundColor: Color(0xFF2C2C2C), // Couleur de fond sombre
       body: SingleChildScrollView(
         child: Container(
           decoration: BoxDecoration(
@@ -116,11 +114,6 @@ class _RegistrationPageState extends State<RegistrationPage> with SingleTickerPr
                   controller: nomController,
                   decoration: InputDecoration(
                     labelText: 'Nom',
-                    filled: true,
-                    fillColor: Colors.white,
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10.0),
-                    ),
                   ),
                 ),
                 SizedBox(height: 20.0),
@@ -128,35 +121,13 @@ class _RegistrationPageState extends State<RegistrationPage> with SingleTickerPr
                   controller: prenomController,
                   decoration: InputDecoration(
                     labelText: 'Prénom',
-                    filled: true,
-                    fillColor: Colors.white,
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10.0),
-                    ),
                   ),
                 ),
-                SizedBox(height: 10.0),
-                TextField(
-                  controller: dateNaissanceController,
-                  decoration: InputDecoration(
-                    labelText: 'Date de naissance',
-                    filled: true,
-                    fillColor: Colors.white,
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10.0),
-                    ),
-                  ),
-                ),
-                SizedBox(height: 10.0),
-                TextField(
+                SizedBox(height: 20.0),
+                TextFormField(
                   controller: emailController,
                   decoration: InputDecoration(
                     labelText: 'Adresse e-mail',
-                    filled: true,
-                    fillColor: Colors.white,
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10.0),
-                    ),
                   ),
                 ),
                 SizedBox(height: 20.0),
@@ -164,11 +135,6 @@ class _RegistrationPageState extends State<RegistrationPage> with SingleTickerPr
                   controller: nomUtilisateurController,
                   decoration: InputDecoration(
                     labelText: 'Nom d\'utilisateur',
-                    filled: true,
-                    fillColor: Colors.white,
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10.0),
-                    ),
                   ),
                 ),
                 SizedBox(height: 20.0),
@@ -176,11 +142,6 @@ class _RegistrationPageState extends State<RegistrationPage> with SingleTickerPr
                   controller: motDePasseController,
                   decoration: InputDecoration(
                     labelText: 'Mot de passe',
-                    filled: true,
-                    fillColor: Colors.white,
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10.0),
-                    ),
                   ),
                   obscureText: true,
                 ),
@@ -189,42 +150,131 @@ class _RegistrationPageState extends State<RegistrationPage> with SingleTickerPr
                   controller: confirmationMotDePasseController,
                   decoration: InputDecoration(
                     labelText: 'Confirmation du mot de passe',
-                    filled: true,
-                    fillColor: Colors.white,
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10.0),
-                    ),
                   ),
                   obscureText: true,
                 ),
                 SizedBox(height: 20.0),
+                InkWell(
+                  onTap: () {
+                    _selectDate(context);
+                  },
+                  child: IgnorePointer(
+                    child: TextFormField(
+                      controller: dateNaissanceController,
+                      decoration: InputDecoration(
+                        labelText: 'Date de naissance',
+                      ),
+                    ),
+                  ),
+                ),
+                SizedBox(height: 20.0),
+                DropdownButtonFormField<String>(
+                  value: selectedSituationFamiliale,
+                  onChanged: (newValue) {
+                    setState(() {
+                      selectedSituationFamiliale = newValue;
+                    });
+                  },
+                  items: situationsFamiliales.map((situation) {
+                    return DropdownMenuItem<String>(
+                      value: situation,
+                      child: Text(situation),
+                    );
+                  }).toList(),
+                  decoration: InputDecoration(
+                    labelText: 'Situation familiale',
+                  ),
+                ),
+                SizedBox(height: 20.0),
+                DropdownButtonFormField<String>(
+                  value: selectedRegion,
+                  onChanged: (newValue) {
+                    setState(() {
+                      selectedRegion = newValue;
+                    });
+                  },
+                  items: regions.map((region) {
+                    return DropdownMenuItem<String>(
+                      value: region,
+                      child: Text(region),
+                    );
+                  }).toList(),
+                  decoration: InputDecoration(
+                    labelText: 'Région',
+                  ),
+                ),
+                SizedBox(height: 20.0),
+                TextFormField(
+                  controller: nbreEnfantsController,
+                  decoration: InputDecoration(
+                    labelText: 'Nombre d\'enfants',
+                  ),
+                ),
+                SizedBox(height: 20.0),
+                DropdownButtonFormField<String>(
+                  value: selectedQuestion,
+                  onChanged: (newValue) {
+                    setState(() {
+                      selectedQuestion = newValue;
+                    });
+                  },
+                  items: questions.map((question) {
+                    return DropdownMenuItem<String>(
+                      value: question,
+                      child: Text(question),
+                    );
+                  }).toList(),
+                  decoration: InputDecoration(
+                    labelText: 'Question pour récupérer le mot de passe',
+                  ),
+                ),
+                SizedBox(height: 20.0),
+                TextFormField(
+                  controller: reponseQuestionController,
+                  decoration: InputDecoration(
+                    labelText: 'Réponse à la question',
+                  ),
+                ),
+                SizedBox(height: 20.0),
                 ElevatedButton(
-                  onPressed: () {
+                  onPressed: () async {
                     // Vérifier les informations de l'utilisateur
                     String nom = nomController.text;
                     String prenom = prenomController.text;
-                    String dateNaissance = dateNaissanceController.text;
                     String email = emailController.text;
                     String nomUtilisateur = nomUtilisateurController.text;
                     String motDePasse = motDePasseController.text;
-                    String confirmationMotDePasse =
-                        confirmationMotDePasseController.text;
-
+                    String confirmationMotDePasse = confirmationMotDePasseController.text;
+                    String reponseQuestion = reponseQuestionController.text;
+                    String nb_enfant = nbreEnfantsController.text;
                     if (nom.isNotEmpty &&
                         prenom.isNotEmpty &&
-                        dateNaissance.isNotEmpty &&
                         email.isNotEmpty &&
                         nomUtilisateur.isNotEmpty &&
                         motDePasse.isNotEmpty &&
                         confirmationMotDePasse.isNotEmpty &&
                         selectedSituationFamiliale != null &&
-                        selectedRegion != null) {
+                        selectedRegion != null &&
+                        selectedQuestion != null &&
+                        reponseQuestion.isNotEmpty &&
+                        nb_enfant.isNotEmpty) {
                       if (motDePasse == confirmationMotDePasse) {
                         // Rediriger vers la page de gestion du budget
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => BudgetPage(),
+                            builder: (context) => BudgetPage(
+                              nom: nomController.text,
+                              prenom: prenomController.text,
+                              selectedDate: selectedDate,
+                              email: emailController.text,
+                              motDePasse: motDePasseController.text,
+                              selectedQuestion: selectedQuestion!,
+                              reponseQuestion: reponseQuestionController.text,
+                              selectedSituationFamiliale: selectedSituationFamiliale!,
+                              selectedRegion: selectedRegion!,
+                              nb_enfant: nbreEnfantsController.text,
+                            ),
                           ),
                         );
                       } else {
@@ -233,7 +283,8 @@ class _RegistrationPageState extends State<RegistrationPage> with SingleTickerPr
                           context: context,
                           builder: (context) => AlertDialog(
                             title: Text('Erreur'),
-                            content: Text('Les mots de passe ne correspondent pas'),
+                            content:
+                            Text('Les mots de passe ne correspondent pas'),
                             actions: [
                               TextButton(
                                 onPressed: () {
@@ -272,7 +323,7 @@ class _RegistrationPageState extends State<RegistrationPage> with SingleTickerPr
                     padding: EdgeInsets.symmetric(vertical: 15.0),
                   ),
                   child: Text(
-                    'S\'inscrire',
+                    'Suivant',
                     style: TextStyle(fontSize: 16.0),
                   ),
                 ),

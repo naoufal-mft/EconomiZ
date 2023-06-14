@@ -31,7 +31,8 @@ class basedd {
     CREATE TABLE IF NOT EXISTS coordonnees (
       idUser  INTEGER PRIMARY KEY AUTOINCREMENT,
       Nom TEXT NOT NULL,
-      Prenom TEXT NOT NULL
+      Prenom TEXT NOT NULL, 
+      DoB DATE NOT NULL
       
     )
     
@@ -41,6 +42,8 @@ class basedd {
       iduser INTEGER NOT NULL,
       mail TEXT NOT NULL,
       mdp TEXT NOT NULL,
+      Question TEXT NOT NULL,
+      Réponse TEXT NOT NULL,
       
       FOREIGN KEY (iduser) REFERENCES coordonnees (idUser) ON DELETE CASCADE
     )
@@ -69,7 +72,6 @@ class basedd {
       
       FOREIGN KEY (iduser) REFERENCES coordonnees (idUser) ON DELETE CASCADE
     )
-    
     ''');
     print(" onCreate =====================================");
   }
@@ -105,6 +107,21 @@ class basedd {
   }
 
 
+
+  Future<bool> checkExistingEmail(String email) async {
+    Database? mydb = await db;
+    List<Map> result = await mydb!.rawQuery("SELECT * FROM auth WHERE mail = '$email'");
+    return result.isNotEmpty;
+  }
+
+
+  Future<List<Map>> getColumns(String tableName) async {
+    String sql = "PRAGMA table_info($tableName)";
+    return await readData(sql);
+  }
+
+
+
 }
 
 void main() async {
@@ -113,26 +130,55 @@ void main() async {
   basedd bdd= basedd();
   await bdd.initialDb();
 
-  bdd.insertData('INSERT INTO coordonnees(nom,prenom) VALUES("Xlo","Xlo")');
-  String sql = 'INSERT INTO charge(idcharge,nom_charge,prix,type,iduser) VALUES("1","creme","200","fixe","1")';
-  sql = 'INSERT INTO charge(idcharge,nom_charge,prix,type,iduser) VALUES("3","lame","500","variable","3")';
-  bdd.insertData(sql);
 
-  List<Map> result = await bdd.readData('SELECT * FROM charge');
+
+  List<Map> result = await bdd.readData('SELECT * FROM auth');
   print('Read Data:');
   result.forEach((row) {
     print(row);
   }
   );
 
+  print("tableeeeeeeeeeeeeeee 2 ");
+
   List<Map> result2 = await bdd.readData('SELECT * FROM coordonnees');
   print('Read Data:');
-  var a = Map();
   result2.forEach((row) {
-    a= row;
-    print(a);
+    print(row);
+  });
+
+  print("tableeeeeeeeeeeeeeee 3 ");
+
+
+  List<Map> result4 = await bdd.readData('SELECT * FROM info');
+  print('Read Data:');
+  result4.forEach((row) {
+    print(row);
+  }
+  );
+
+  print("tableeeeeeeeeeeeeeee 4 ");
+
+
+  List<Map> result5 = await bdd.readData('SELECT * FROM charge');
+  print('Read Data:');
+  result5.forEach((row) {
+    print(row);
   });
 
 
+  // Afficher les colonnes de la table "coordonnees"
+  /*List<Map> coordonneesColumns = await bdd.getColumns('coordonnees');
+  print('Columns of coordonnees table:');
+  coordonneesColumns.forEach((column) {
+    print(column['name']);
+  });*/
+
+  // Afficher les colonnes de la table "auth"
+  /*List<Map> authColumns = await bdd.getColumns('auth');
+  print('Columns of auth table:');
+  authColumns.forEach((column) {
+    print(column['name']);
+  });*/
 
 }

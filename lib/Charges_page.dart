@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'basedd.dart';
+
 
 class Charge {
   String nom;
@@ -26,13 +28,19 @@ class _ChargesPageState extends State<ChargesPage> {
   TextEditingController nomController = TextEditingController();
   TextEditingController montantController = TextEditingController();
 
-  void ajouterCharge(String nom, double montant, IconData icone) {
-    setState(() {
-      charges.add(Charge(nom: nom, montant: montant, icone: icone));
-    });
+  Future<void> ajouterCharge(String nom, double montant) async {
+    basedd database = basedd();
+
+    // Convertir le montant en chaîne de caractères
+    String montantStr = montant.toString();
+
+    // Insérer les données dans la table "charge"
+    String insertQuery = "INSERT INTO charge(nom_charge, prix, type ,iduser) VALUES('$nom', '$montantStr', 'Fixe','1')";
+    await database.insertData(insertQuery);
     nomController.clear();
     montantController.clear();
   }
+
 
   void modifierCharge(int index, double montantModifie) {
     setState(() {
@@ -85,7 +93,7 @@ class _ChargesPageState extends State<ChargesPage> {
                     String nom = nomController.text.trim();
                     double montant = double.tryParse(montantController.text) ?? 0.0;
                     if (nom.isNotEmpty && montant > 0) {
-                      ajouterCharge(nom, montant, Icons.attach_money);
+                      ajouterCharge(nom, montant);
                     }
                   },
                   style: ElevatedButton.styleFrom(
@@ -149,6 +157,38 @@ class _ChargesPageState extends State<ChargesPage> {
                   ),
                 );
               },
+
+            ),
+          ),
+          ElevatedButton(
+            onPressed: () async {
+              // Logique du bouton OK
+              for (Charge charge in charges) {
+                String nom = charge.nom;
+                double montant = charge.montant;
+
+                print(nom);
+                print(montant);
+
+                if (nom.isNotEmpty && montant > 0) {
+                  await ajouterCharge(nom, montant);
+                }
+
+
+              }
+              Navigator.pop(context);
+            },
+            style: ElevatedButton.styleFrom(
+              primary: Colors.teal.shade500,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10.0),
+              ),
+              padding: EdgeInsets.symmetric(vertical: 10.0, horizontal:50),
+
+            ),
+            child: Text(
+              'OK',
+              style: TextStyle(color: Colors.white),
             ),
           ),
         ],
@@ -177,6 +217,7 @@ class _ModifierChargeDialogState extends State<ModifierChargeDialog> {
   void initState() {
     super.initState();
     montantController.text = widget.charge.montant.toString();
+
   }
 
   @override

@@ -1,9 +1,37 @@
 import 'package:flutter/material.dart';
 import 'Charges_page.dart';
+import 'basedd.dart';
+import 'login_page.dart';
 
 class BudgetPage extends StatefulWidget {
+  final String nom;
+  final String prenom;
+  final DateTime? selectedDate;
+  final String email;
+  final String motDePasse;
+  final String selectedQuestion;
+  final String reponseQuestion;
+  final String selectedSituationFamiliale;
+  final String selectedRegion;
+  final String nb_enfant;
+
+  BudgetPage({
+    required this.nom,
+    required this.prenom,
+    required this.selectedDate,
+    required this.email,
+    required this.motDePasse,
+    required this.selectedQuestion,
+    required this.reponseQuestion,
+    required this.selectedSituationFamiliale,
+    required this.selectedRegion,
+    required this.nb_enfant,
+  });
+
+
   @override
   _BudgetPageState createState() => _BudgetPageState();
+
 }
 
 class _BudgetPageState extends State<BudgetPage> {
@@ -13,15 +41,67 @@ class _BudgetPageState extends State<BudgetPage> {
     'Charges': 0.0,
     'Épargne': 0.0,
   };
+  Future<basedd> init_bdd() async {
+    basedd bdd = await basedd();
+    await bdd.initialDb();
+    return bdd as basedd;
+  }
 
+  double amountFinal = 0.0;
   void addAmountToCategory(String categoryName, double amount) {
     setState(() {
-      categoryAmounts.update(categoryName, (value) => value + amount);
+      categoryAmounts.update(categoryName, (value) {
+        double updatedAmount = value + amount;
+        amountFinal = updatedAmount; // Mettre à jour la variable amountFinal
+        return updatedAmount;
+      });
     });
   }
 
+
+  Future<void> registerUser() async {
+      basedd database = basedd();
+      String sqlFormattedDate =
+          "${widget.selectedDate!.year}-${widget.selectedDate!.month.toString().padLeft(2, '0')}-${widget.selectedDate!.day.toString().padLeft(2, '0')}";
+
+      // Vérifier si l'e-mail existe déjà
+      bool emailExists = await database.checkExistingEmail(widget.email);
+      if (!emailExists) {
+        String coordonneesInsertQuery =
+            "INSERT INTO coordonnees(Nom, Prenom, DoB) VALUES('${widget.nom}', '${widget.prenom}', '$sqlFormattedDate')";
+        int insertedCoordonneesId = await database.insertData(coordonneesInsertQuery);
+
+        String authInsertQuery =
+            "INSERT INTO auth(iduser, mail, mdp, Question, Réponse) VALUES($insertedCoordonneesId, '${widget.email}', '${widget.motDePasse}', '${widget.selectedQuestion}', '${widget.reponseQuestion}')";
+        String infoInsertQuery = "INSERT INTO info(iduser, sit_familial, region, nbr_enfant, revenu) VALUES($insertedCoordonneesId, '${widget.selectedSituationFamiliale}', '${widget.selectedRegion}', '${widget.nb_enfant}', $amountFinal)";
+
+        await database.insertData(authInsertQuery);
+        await database.insertData(coordonneesInsertQuery);
+        await database.insertData(infoInsertQuery);
+
+
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Inscription réussie !'),
+            backgroundColor: Colors.green,
+          ),
+        );
+      }else{
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('L\'e-mail existe déjà.'),
+            backgroundColor: Colors.red,
+          ),
+        );
+        return; // Arrêter l'exécution de la fonction
+   }
+    }
+
+
+
   @override
   Widget build(BuildContext context) {
+
     return Scaffold(
       appBar: AppBar(
         title: Text('Gestion du Budget'),
@@ -51,7 +131,8 @@ class _BudgetPageState extends State<BudgetPage> {
                     categoryName: 'Revenus',
                     amount: categoryAmounts['Revenus']!,
                     icon: Icons.attach_money,
-                    onAddAmount: (amount) {
+                    onAddAmount: (amount) async {
+
                       addAmountToCategory('Revenus', amount);
                     },
                   ),
@@ -86,6 +167,31 @@ class _BudgetPageState extends State<BudgetPage> {
                     onAddAmount: (amount) {
                       addAmountToCategory('Épargne', amount);
                     },
+                  ),
+                  SizedBox(height: 30.0),
+                  ElevatedButton(
+                    onPressed: () async {
+                      basedd database = await init_bdd();
+                      await registerUser();
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                          builder: (context) => CustomLoginPage(),
+                      ),
+                      );
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.cyan.shade800,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10.0),
+                      ),
+                      padding: EdgeInsets.symmetric(vertical: 15.0, horizontal:20),
+                    ),
+
+                    child: Text(
+                      'S\'inscrire',
+                      style: TextStyle(fontSize:20.0),
+                    ),
                   ),
                 ],
               ),
@@ -246,4 +352,3 @@ class _AmountDialogState extends State<AmountDialog> {
     );
   }
 }
-

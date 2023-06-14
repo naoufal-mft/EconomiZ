@@ -54,6 +54,7 @@ class CustomLoginPage extends StatelessWidget {
                 SizedBox(height: 20.0),
                 Center(
                   child: TextField(
+                    controller: usernameController,
                     decoration: InputDecoration(
                       labelText: 'Adresse mail',
                       filled: true,
@@ -67,6 +68,7 @@ class CustomLoginPage extends StatelessWidget {
                 SizedBox(height: 10.0),
                 Center(
                   child: TextField(
+                    controller: passwordController,
                     decoration: InputDecoration(
                       labelText: 'Mot de passe',
                       filled: true,
@@ -80,8 +82,31 @@ class CustomLoginPage extends StatelessWidget {
                 ),
                 SizedBox(height: 20.0),
                 ElevatedButton(
-                  onPressed: () {
-                    // Actions à effectuer lors de la connexion
+                  onPressed: () async {
+                    final username = usernameController.text;
+                    final password = passwordController.text;
+                    basedd database = basedd();
+                    bool isAuthenticated = await database.authenticate(username, password);
+                    if (isAuthenticated) {
+                      print("Authentification réussi !!!!!!!!!!!!!!!!!!!!");
+                    } else {
+                      // Afficher un message d'erreur si l'authentification échoue
+                      showDialog(
+                      context: context,
+                      builder: (context) => AlertDialog(
+                        title: Text('Erreur'),
+                        content: Text('Nom d\'utilisateur ou mot de passe incorrect'),
+                        actions: [
+                          TextButton(
+                              onPressed: () {
+                              Navigator.pop(context);
+                            },
+                            child: Text('OK'),
+                          ),
+                        ],
+                      ),
+                      );
+                    }
                   },
                   style: ElevatedButton.styleFrom(
                     primary: Colors.cyan,
