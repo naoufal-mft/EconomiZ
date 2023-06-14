@@ -50,8 +50,8 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
             colors: [
-              Colors.cyan.shade900,
-              Colors.cyan.shade500,
+              Colors.tealAccent,
+              Colors.blue.shade900,
             ],
           ),
           borderRadius: BorderRadius.only(
@@ -66,7 +66,7 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
               FadeTransition(
                 opacity: _animation,
                 child: Image.asset(
-                  'assets/eco.gif', // Chemin vers le fichier GIF
+                  'assets/econo.gif', // Chemin vers le fichier GIF
                   width: 520,
                   height: 420,
                 ),
