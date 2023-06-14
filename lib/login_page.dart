@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'registration_page.dart';
-import 'budget_page.dart';
+import 'Charges_page.dart';
 import 'basedd.dart';
 
 class CustomLoginPage extends StatelessWidget {
@@ -46,6 +46,7 @@ class CustomLoginPage extends StatelessWidget {
               SizedBox(height: 20.0),
               Center(
                 child: TextField(
+                  controller: usernameController,
                   decoration: InputDecoration(
                     labelText: 'Adresse mail',
                     filled: true,
@@ -59,6 +60,7 @@ class CustomLoginPage extends StatelessWidget {
               SizedBox(height: 10.0),
               Center(
                 child: TextField(
+                  controller: passwordController,
                   decoration: InputDecoration(
                     labelText: 'Mot de passe',
                     filled: true,
@@ -82,6 +84,12 @@ class CustomLoginPage extends StatelessWidget {
                   bool isAuthenticated = await bdd.authenticate(username, password);
                   if (isAuthenticated) {
                     // Authentification réussie, effectuez les actions souhaitées
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => ChargesPage(),
+                      ),
+                    );
                     print("Authentification réussie !");
                   } else {
                     // Authentification échouée, affichez un message d'erreur ou effectuez d'autres actions

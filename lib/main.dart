@@ -1,7 +1,9 @@
+import 'package:economiz/budget_page.dart';
 import 'package:flutter/material.dart';
 import 'login_page.dart';
 import 'registration_page.dart';
 import 'splash_page.dart';
+import 'Charges_page.dart';
 
 
 void main() {
@@ -20,6 +22,8 @@ class MyApp extends StatelessWidget {
       routes: {
         '/': (context) => SplashScreen(),
         '/inscription': (context) => RegistrationPage(),
+        'charge' : (context) => ChargesPage(),
+        '/budget':(context)=> BudgetPage(),
       },
     );
   }

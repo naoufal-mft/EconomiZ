@@ -3,7 +3,7 @@ import 'package:intl/intl.dart';
 import 'package:flutter/services.dart';
 import 'dart:io';
 import 'package:image_picker/image_picker.dart';
-
+import 'basedd.dart';
 
 class MonProfilPage extends StatefulWidget {
   @override
@@ -22,6 +22,7 @@ class _MonProfilPageState extends State<MonProfilPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+
       appBar: AppBar(
         title: Text('Mon profil'),
       ),

@@ -112,8 +112,8 @@ void main() async {
 
   basedd bdd= basedd();
   await bdd.initialDb();
-  bdd.insertData('INSERT INTO coordonnees(nom,prenom) VALUES("Xlo","Xlo")');
-  String sql = 'INSERT INTO charge(idcharge,nom_charge,prix,type,iduser) VALUES("1","creme","200","fixe","1")';
+  bdd.insertData('INSERT INTO auth(nom,prenom) VALUES("el","el")');
+  String sql = 'INSERT INTO charge(nom_charge,prix,type,iduser) VALUES("creme","200","fixe","1")';
   bdd.insertData(sql);
   List<Map> result = await bdd.readData('SELECT * FROM auth');
   print('Read Data:');
