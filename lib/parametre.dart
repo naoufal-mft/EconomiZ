@@ -7,17 +7,14 @@ import 'package:easy_localization/easy_localization.dart';
 
 
 
-
-
 class MonProfilPage extends StatefulWidget {
   @override
   _MonProfilPageState createState() => _MonProfilPageState();
 }
 
 class _MonProfilPageState extends State<MonProfilPage> {
-  TextEditingController _emailController = TextEditingController();
-  TextEditingController _dateNaissanceController = TextEditingController();
   TextEditingController _nomController = TextEditingController();
+  TextEditingController _dateNaissanceController = TextEditingController();
   TextEditingController _adresseController = TextEditingController();
   TextEditingController _telephoneController = TextEditingController();
   DateTime? _selectedDate;
@@ -34,21 +31,37 @@ class _MonProfilPageState extends State<MonProfilPage> {
         child: Padding(
           padding: const EdgeInsets.all(16.0),
           child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              GestureDetector(
-                onTap: _pickProfileImage,
-                child: CircleAvatar(
-                  radius: 50,
-                  backgroundImage: _hasProfileImage
-                      ? FileImage(_profileImage!) as ImageProvider<Object>
-                      : AssetImage('assets/photo_vide.png'),
-                ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  GestureDetector(
+                    onTap: _showContactInfo,
+                    child: Row(
+                      children: [
+                        Icon(Icons.mail),
+                        SizedBox(width: 8.0),
+                        Text('Contactez-nous'),
+                      ],
+                    ),
+                  ),
+                  GestureDetector(
+                    onTap: _pickProfileImage,
+                    child: CircleAvatar(
+                      radius: 50,
+                      backgroundImage: _hasProfileImage
+                          ? FileImage(_profileImage!) as ImageProvider<Object>
+                          : AssetImage('assets/photo_vide.png'),
+                    ),
+                  ),
+                ],
               ),
               SizedBox(height: 16.0),
               TextField(
-                controller: _emailController,
+                controller: _nomController,
                 decoration: InputDecoration(
-                  labelText: 'Email',
+                  labelText: 'Nom complet',
                 ),
               ),
               SizedBox(height: 16.0),
@@ -63,13 +76,6 @@ class _MonProfilPageState extends State<MonProfilPage> {
                       labelText: 'Date de naissance',
                     ),
                   ),
-                ),
-              ),
-              SizedBox(height: 16.0),
-              TextField(
-                controller: _nomController,
-                decoration: InputDecoration(
-                  labelText: 'Nom complet',
                 ),
               ),
               SizedBox(height: 16.0),
@@ -91,20 +97,27 @@ class _MonProfilPageState extends State<MonProfilPage> {
               ElevatedButton(
                 onPressed: () {
                   // Code pour enregistrer les modifications du profil
-                  String newEmail = _emailController.text;
+                  String newNom = _nomController.text;
                   String newDateNaissance =
                   DateFormat('dd/MM/yyyy').format(_selectedDate!);
-                  String newNom = _nomController.text;
                   String newAdresse = _adresseController.text;
                   String newTelephone = _telephoneController.text;
                   // Code pour effectuer les opérations nécessaires avec les nouvelles informations du profil
+
+                  // Afficher le SnackBar
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text('Les données ont été enregistrées.'),
+                    ),
+                  );
                 },
                 child: Text('Enregistrer'),
               ),
-              ElevatedButton(
-                onPressed: _removeProfileImage,
-                child: Text('Supprimer la photo'),
-              ),
+              if (_hasProfileImage) // Afficher le bouton de suppression uniquement s'il y a une photo de profil
+                ElevatedButton(
+                  onPressed: _removeProfileImage,
+                  child: Text('Supprimer la photo'),
+                ),
             ],
           ),
         ),
@@ -147,11 +160,40 @@ class _MonProfilPageState extends State<MonProfilPage> {
     });
   }
 
+  void _showContactInfo() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Contactez-nous'),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text('Adresse e-mail: my.economiz@outlook.fr'),
+              SizedBox(height: 8.0),
+              Text('Numéro de téléphone:'),
+              Text('+33 5 70809011'),
+            ],
+          ),
+          actions: [
+            ElevatedButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: Text('Fermer'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+
   @override
   void dispose() {
-    _emailController.dispose();
-    _dateNaissanceController.dispose();
     _nomController.dispose();
+    _dateNaissanceController.dispose();
     _adresseController.dispose();
     _telephoneController.dispose();
     super.dispose();
@@ -174,49 +216,55 @@ class _MotDePassePageState extends State<MotDePassePage> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: EdgeInsets.all(16.0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            'Changer de mot de passe',
-            style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold),
-          ),
-          SizedBox(height: 16.0),
-          TextField(
-            controller: _ancienMotDePasseController,
-            obscureText: true,
-            decoration: InputDecoration(labelText: 'Ancien mot de passe'),
-          ),
-          SizedBox(height: 16.0),
-          TextField(
-            controller: _nouveauMotDePasseController,
-            obscureText: true,
-            decoration: InputDecoration(labelText: 'Nouveau mot de passe'),
-          ),
-          SizedBox(height: 16.0),
-          TextField(
-            controller: _confirmationMotDePasseController,
-            obscureText: true,
-            decoration: InputDecoration(labelText: 'Confirmer le mot de passe'),
-          ),
-          SizedBox(height: 16.0),
-          ElevatedButton(
-            onPressed: () {
-              _changerMotDePasse();
-            },
-            child: Text('Enregistrer'),
-          ),
-          if (_errorMessage.isNotEmpty)
-            Padding(
-              padding: EdgeInsets.only(top: 16.0),
-              child: Text(
-                _errorMessage,
-                style: TextStyle(color: Colors.red),
-              ),
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Changer de mot de passe'),
+      ),
+      body: Container(
+        padding: EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              'Changer de mot de passe',
+              style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold),
             ),
-        ],
+            SizedBox(height: 16.0),
+            TextField(
+              controller: _ancienMotDePasseController,
+              obscureText: true,
+              decoration: InputDecoration(labelText: 'Ancien mot de passe'),
+            ),
+            SizedBox(height: 16.0),
+            TextField(
+              controller: _nouveauMotDePasseController,
+              obscureText: true,
+              decoration: InputDecoration(labelText: 'Nouveau mot de passe'),
+            ),
+            SizedBox(height: 16.0),
+            TextField(
+              controller: _confirmationMotDePasseController,
+              obscureText: true,
+              decoration:
+              InputDecoration(labelText: 'Confirmer le mot de passe'),
+            ),
+            SizedBox(height: 16.0),
+            ElevatedButton(
+              onPressed: () {
+                _changerMotDePasse();
+              },
+              child: Text('Enregistrer'),
+            ),
+            if (_errorMessage.isNotEmpty)
+              Padding(
+                padding: EdgeInsets.only(top: 16.0),
+                child: Text(
+                  _errorMessage,
+                  style: TextStyle(color: Colors.red),
+                ),
+              ),
+          ],
+        ),
       ),
     );
   }
@@ -254,8 +302,17 @@ class _MotDePassePageState extends State<MotDePassePage> {
       _errorMessage = '';
     });
 
-    // Afficher un message de succès ou de redirection vers une autre page
-    // ...
+    // Afficher un SnackBar avec le message de succès
+    _showSuccessSnackBar('Le mot de passe a été changé avec succès.');
+  }
+
+  void _showSuccessSnackBar(String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(message),
+        backgroundColor: Colors.green,
+      ),
+    );
   }
 }
 
