@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
+import 'basedd.dart';
 import 'registration_page.dart';
 import 'budget_page.dart';
-import 'basedd.dart';
 
 class CustomLoginPage extends StatefulWidget {
   @override
@@ -27,8 +27,8 @@ class _CustomLoginPageState extends State<CustomLoginPage> {
         decoration: BoxDecoration(
           gradient: LinearGradient(
             colors: [
-              Colors.cyan.shade900,
-              Colors.cyan.shade500,
+              Colors.lightBlue.shade900,
+              Colors.lightBlue.shade500,
             ],
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
@@ -49,7 +49,7 @@ class _CustomLoginPageState extends State<CustomLoginPage> {
                         return LinearGradient(
                           colors: [
                             Colors.white,
-                            Colors.white.withOpacity(0.8),
+                            Colors.white.withOpacity(0.2),
                             Colors.transparent,
                           ],
                           stops: [0.0, 0.8, 1.0],
@@ -212,24 +212,39 @@ class _CustomLoginPageState extends State<CustomLoginPage> {
                         ),
                         actions: [
                           TextButton(
-                            onPressed: () {
+                            onPressed: () async {
+                              basedd database = basedd();
                               if (selectedQuestion != null &&
                                   reponseQuestionController.text.isNotEmpty) {
+
+                                String question = selectedQuestion!;
+                                String reponse = reponseQuestionController.text;
+                                String mail=emailController.text;
+                                bool isQuestionAnswered = await database.fortgot_password(mail,question,reponse);
+
                                 // Vérifier la réponse à la question
-                                if (selectedQuestion ==
-                                    questions[0] &&
-                                    reponseQuestionController.text ==
-                                        'Réponse1') {
+                                if (isQuestionAnswered) {
                                   // Actions à effectuer si la réponse est correcte pour la première question
                                   setState(() {
-                                    isQuestionAnswered = true;
+                                    this.isQuestionAnswered = true;
                                   });
                                   Navigator.pop(context);
                                   showDialog(
                                     context: context,
                                     builder: (context) => AlertDialog(
                                       title: Text('Réinitialiser le mot de passe'),
-                                      content: Text('Entrez un nouveau mot de passe'),
+                                      content: Column(
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          Text('Entrez un nouveau mot de passe'),
+                                          TextField(
+                                            onChanged: (newPassword) async {
+                                              await database.updateData('UPDATE auth  SET mdp = "$newPassword" WHERE iduser=2');
+                                              // Do something with the new password
+                                            },
+                                          ),
+                                        ],
+                                      ),
                                       actions: [
                                         TextButton(
                                           onPressed: () {
@@ -244,35 +259,7 @@ class _CustomLoginPageState extends State<CustomLoginPage> {
                                       ],
                                     ),
                                   );
-                                } else if (selectedQuestion ==
-                                    questions[1] &&
-                                    reponseQuestionController.text ==
-                                        'Réponse2') {
-                                  // Actions à effectuer si la réponse est correcte pour la deuxième question
-                                  setState(() {
-                                    isQuestionAnswered = true;
-                                  });
-                                  Navigator.pop(context);
-                                  showDialog(
-                                    context: context,
-                                    builder: (context) => AlertDialog(
-                                      title: Text('Réinitialiser le mot de passe'),
-                                      content: Text('Entrez un nouveau mot de passe'),
-                                      actions: [
-                                        TextButton(
-                                          onPressed: () {
-                                            // Réinitialiser le mot de passe
-                                            Navigator.pop(context);
-                                          },
-                                          child: Text(
-                                            'Valider',
-                                            style: TextStyle(color: Colors.cyan),
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  );
-                                } else {
+                                }  else {
                                   showDialog(
                                     context: context,
                                     builder: (context) => AlertDialog(

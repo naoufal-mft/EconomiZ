@@ -50,8 +50,8 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
             colors: [
-              Colors.tealAccent,
-              Colors.blue.shade900,
+              Colors.white,
+              Colors.lightBlue,
             ],
           ),
           borderRadius: BorderRadius.only(
@@ -66,7 +66,7 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
               FadeTransition(
                 opacity: _animation,
                 child: Image.asset(
-                  'assets/econo.gif',
+                  'assets/econo.gif', // Chemin vers le fichier GIF
                   width: 520,
                   height: 420,
                 ),
@@ -82,7 +82,7 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
                     );
                   },
                   style: ElevatedButton.styleFrom(
-                    primary: Colors.cyan.shade900,
+                    primary: Colors.lightBlue.shade800,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(30),
                     ),

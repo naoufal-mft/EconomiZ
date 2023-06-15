@@ -31,7 +31,6 @@ class BudgetPage extends StatefulWidget {
 
   @override
   _BudgetPageState createState() => _BudgetPageState();
-
 }
 
 class _BudgetPageState extends State<BudgetPage> {
@@ -354,3 +353,4 @@ class _AmountDialogState extends State<AmountDialog> {
     );
   }
 }
+

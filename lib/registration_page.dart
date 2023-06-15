@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'budget_page.dart';
 import 'package:intl/intl.dart';
 import 'budget_page.dart';
 import 'basedd.dart';
@@ -20,6 +21,7 @@ class _RegistrationPageState extends State<RegistrationPage> with SingleTickerPr
   TextEditingController confirmationMotDePasseController = TextEditingController();
   DateTime? selectedDate;
   TextEditingController dateNaissanceController = TextEditingController();
+
   String? selectedSituationFamiliale;
   List<String> situationsFamiliales = [
     'Célibataire',
@@ -68,6 +70,7 @@ class _RegistrationPageState extends State<RegistrationPage> with SingleTickerPr
     _controleurAnimation.dispose();
     super.dispose();
   }
+
   Future<void> _selectDate(BuildContext context) async {
     final DateTime? pickedDate = await showDatePicker(
       context: context,
@@ -85,8 +88,6 @@ class _RegistrationPageState extends State<RegistrationPage> with SingleTickerPr
     }
   }
 
-
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -94,6 +95,7 @@ class _RegistrationPageState extends State<RegistrationPage> with SingleTickerPr
         title: Text('Inscription'),
         backgroundColor: Colors.cyan.shade700,
       ),
+
       body: SingleChildScrollView(
         child: Container(
           decoration: BoxDecoration(

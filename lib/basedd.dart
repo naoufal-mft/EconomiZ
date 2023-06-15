@@ -72,6 +72,7 @@ class basedd {
       
       FOREIGN KEY (iduser) REFERENCES coordonnees (idUser) ON DELETE CASCADE
     )
+    
     ''');
     print(" onCreate =====================================");
   }
@@ -108,6 +109,7 @@ class basedd {
 
 
 
+
   Future<bool> checkExistingEmail(String email) async {
     Database? mydb = await db;
     List<Map> result = await mydb!.rawQuery("SELECT * FROM auth WHERE mail = '$email'");
@@ -120,13 +122,12 @@ class basedd {
     return await readData(sql);
   }
 
-  Future<bool> checkQuestionAndAnswer(String question, String reponse) async {
-    String sql = "SELECT * FROM auth WHERE Question = '$question' AND Réponse = '$reponse'";
+
+  Future<bool> fortgot_password(String mail,String question, String reponse) async {
+    String sql = "SELECT * FROM auth WHERE mail='$mail' AND Question = '$question' AND Réponse = '$reponse'";
     List<Map> result = await readData(sql);
     return result.isNotEmpty;
   }
-
-
 
 
 }
