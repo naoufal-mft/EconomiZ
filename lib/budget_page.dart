@@ -76,9 +76,11 @@ class _BudgetPageState extends State<BudgetPage> {
         String infoInsertQuery = "INSERT INTO info(iduser, sit_familial, region, nbr_enfant, revenu) VALUES($insertedCoordonneesId, '${widget.selectedSituationFamiliale}', '${widget.selectedRegion}', '${widget.nb_enfant}', $amountFinal)";
 
         await database.insertData(authInsertQuery);
-        await database.insertData(coordonneesInsertQuery);
+        //await database.insertData(coordonneesInsertQuery);
         await database.insertData(infoInsertQuery);
 
+        String chargesUpdateQuery = "UPDATE charge  SET iduser = $insertedCoordonneesId WHERE iduser=1";
+        await database.updateData(chargesUpdateQuery);
 
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(

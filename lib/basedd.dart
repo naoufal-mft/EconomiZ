@@ -120,6 +120,13 @@ class basedd {
     return await readData(sql);
   }
 
+  Future<bool> checkQuestionAndAnswer(String question, String reponse) async {
+    String sql = "SELECT * FROM auth WHERE Question = '$question' AND Réponse = '$reponse'";
+    List<Map> result = await readData(sql);
+    return result.isNotEmpty;
+  }
+
+
 
 
 }
