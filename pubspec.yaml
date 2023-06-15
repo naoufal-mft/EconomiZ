@@ -49,6 +49,7 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
+  flutter_launcher_icons: ^0.13.1
 
   mysql1: ^0.20.0  # Version actuelle de mysql1
   sqflite: ^2.0.2

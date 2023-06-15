@@ -5,6 +5,7 @@ import 'home_page.dart';
 
 
 class CustomLoginPage extends StatefulWidget {
+
   @override
   _CustomLoginPageState createState() => _CustomLoginPageState();
 }
@@ -104,12 +105,14 @@ class _CustomLoginPageState extends State<CustomLoginPage> {
                     basedd database = basedd();
                     bool isAuthenticated = await database.authenticate(email, password);
                     if (isAuthenticated) {
+                      List<Map> list = await database.readData("SELECT * FROM auth WHERE mail = '$email'");
+                      int id = list[0]['iduser'];
                       print("Authentification réussi !!!!!!!!!!!!!!!!!!!!");
                       // Redirection vers la classe de destination
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => HomePage(),
+                          builder: (context) => HomePage(data:id),
                         ),
                       );
                     } else {
@@ -326,8 +329,8 @@ class _CustomLoginPageState extends State<CustomLoginPage> {
                       showDialog(
                         context: context,
                         builder: (context) => AlertDialog(
-                          title: Text('Aide'),
-                          content: Text('Voici une description de l\'application.'),
+                          title: Text('Description'),
+                          content: Text("Notre application de gestion budgétaire vous aide à mieux gérer vos finances personnelles et à réaliser des économies. Suivez vos dépenses, fixez des budgets, planifiez vos objectifs financiers et bénéficiez d'analyses détaillées. Notre équipe de support est à votre disposition pour toute assistance. Prenez le contrôle de vos finances avec notre application de gestion budgétaire !"),
                           actions: [
                             TextButton(
                               onPressed: () {

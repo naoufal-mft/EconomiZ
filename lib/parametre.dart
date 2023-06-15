@@ -4,20 +4,26 @@ import 'package:flutter/services.dart';
 import 'dart:io';
 import 'package:image_picker/image_picker.dart';
 
+import 'basedd.dart';
+
+
+
 
 class MonProfilPage extends StatefulWidget {
+  final int data;
+  MonProfilPage({required this.data});
   @override
   _MonProfilPageState createState() => _MonProfilPageState();
 }
 
 class _MonProfilPageState extends State<MonProfilPage> {
-  TextEditingController _emailController = TextEditingController();
-  TextEditingController _dateNaissanceController = TextEditingController();
   TextEditingController _nomController = TextEditingController();
+  TextEditingController _dateNaissanceController = TextEditingController();
   TextEditingController _adresseController = TextEditingController();
   TextEditingController _telephoneController = TextEditingController();
   DateTime? _selectedDate;
   File? _profileImage;
+  bool _hasProfileImage = false;
 
   @override
   Widget build(BuildContext context) {
@@ -29,19 +35,37 @@ class _MonProfilPageState extends State<MonProfilPage> {
         child: Padding(
           padding: const EdgeInsets.all(16.0),
           child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              GestureDetector(
-                onTap: _pickProfileImage,
-                child: CircleAvatar(
-                  radius: 50,
-                  backgroundImage: _profileImage != null ? FileImage(_profileImage!) as ImageProvider<Object> : AssetImage('assets/photo_vide.png'),
-                ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  GestureDetector(
+                    onTap: _showContactInfo,
+                    child: Row(
+                      children: [
+                        Icon(Icons.mail),
+                        SizedBox(width: 8.0),
+                        Text('Contactez-nous'),
+                      ],
+                    ),
+                  ),
+                  GestureDetector(
+                    onTap: _pickProfileImage,
+                    child: CircleAvatar(
+                      radius: 50,
+                      backgroundImage: _hasProfileImage
+                          ? FileImage(_profileImage!) as ImageProvider<Object>
+                          : AssetImage('assets/photo_vide.png'),
+                    ),
+                  ),
+                ],
               ),
               SizedBox(height: 16.0),
               TextField(
-                controller: _emailController,
+                controller: _nomController,
                 decoration: InputDecoration(
-                  labelText: 'Email',
+                  labelText: 'Nom complet',
                 ),
               ),
               SizedBox(height: 16.0),
@@ -60,16 +84,9 @@ class _MonProfilPageState extends State<MonProfilPage> {
               ),
               SizedBox(height: 16.0),
               TextField(
-                controller: _nomController,
-                decoration: InputDecoration(
-                  labelText: 'Nom complet',
-                ),
-              ),
-              SizedBox(height: 16.0),
-              TextField(
                 controller: _adresseController,
                 decoration: InputDecoration(
-                  labelText: 'Adresse',
+                  labelText: 'Adresse mail',
                 ),
               ),
               SizedBox(height: 16.0),
@@ -80,24 +97,35 @@ class _MonProfilPageState extends State<MonProfilPage> {
                 ),
                 keyboardType: TextInputType.phone,
               ),
-
               SizedBox(height: 16.0),
               ElevatedButton(
-                onPressed: () {
+                onPressed: () async {
                   // Code pour enregistrer les modifications du profil
-                  String newEmail = _emailController.text;
-                  String newDateNaissance = DateFormat('dd/MM/yyyy').format(_selectedDate!);
                   String newNom = _nomController.text;
+                  String newDateNaissance =
+                  DateFormat('dd/MM/yyyy').format(_selectedDate!);
                   String newAdresse = _adresseController.text;
                   String newTelephone = _telephoneController.text;
                   // Code pour effectuer les opérations nécessaires avec les nouvelles informations du profil
+                  basedd bdd = basedd();
+                  await bdd.initialDb();
+                  int id_ = widget.data as int;
+                  print(id_);
+                  await bdd.updateData("UPDATE coordonnees SET Nom = '$newNom', DoB = '$newDateNaissance' WHERE iduser='$id_'");
+                  // Afficher le SnackBar
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text('Les données ont été enregistrées.'),
+                    ),
+                  );
                 },
                 child: Text('Enregistrer'),
               ),
-              ElevatedButton(
-                onPressed: _removeProfileImage,
-                child: Text('Supprimer la photo'),
-              ),
+              if (_hasProfileImage) // Afficher le bouton de suppression uniquement s'il y a une photo de profil
+                ElevatedButton(
+                  onPressed: _removeProfileImage,
+                  child: Text('Supprimer la photo'),
+                ),
             ],
           ),
         ),
@@ -115,17 +143,20 @@ class _MonProfilPageState extends State<MonProfilPage> {
     if (picked != null && picked != _selectedDate) {
       setState(() {
         _selectedDate = picked;
-        _dateNaissanceController.text = DateFormat('dd/MM/yyyy').format(_selectedDate!);
+        _dateNaissanceController.text =
+            DateFormat('dd/MM/yyyy').format(_selectedDate!);
       });
     }
   }
 
   Future<void> _pickProfileImage() async {
-    final pickedFile = await ImagePicker().getImage(source: ImageSource.gallery);
+    final pickedFile =
+    await ImagePicker().getImage(source: ImageSource.gallery);
 
     if (pickedFile != null) {
       setState(() {
         _profileImage = File(pickedFile.path);
+        _hasProfileImage = true;
       });
     }
   }
@@ -133,21 +164,54 @@ class _MonProfilPageState extends State<MonProfilPage> {
   void _removeProfileImage() {
     setState(() {
       _profileImage = null;
+      _hasProfileImage = false;
     });
   }
 
+  void _showContactInfo() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Contactez-nous'),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text('Adresse e-mail: my.economiz@outlook.fr'),
+              SizedBox(height: 8.0),
+              Text('Numéro de téléphone:'),
+              Text('+33 5 70809011'),
+            ],
+          ),
+          actions: [
+            ElevatedButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: Text('Fermer'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+
   @override
   void dispose() {
-    _emailController.dispose();
-    _dateNaissanceController.dispose();
     _nomController.dispose();
+    _dateNaissanceController.dispose();
     _adresseController.dispose();
     _telephoneController.dispose();
     super.dispose();
   }
 }
 
+
 class MotDePassePage extends StatefulWidget {
+  final int data;
+  MotDePassePage({required this.data});
   @override
   _MotDePassePageState createState() => _MotDePassePageState();
 }
@@ -155,61 +219,66 @@ class MotDePassePage extends StatefulWidget {
 class _MotDePassePageState extends State<MotDePassePage> {
   TextEditingController _ancienMotDePasseController = TextEditingController();
   TextEditingController _nouveauMotDePasseController = TextEditingController();
-  TextEditingController _confirmationMotDePasseController =
-  TextEditingController();
+  TextEditingController _confirmationMotDePasseController = TextEditingController();
 
   String _errorMessage = '';
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: EdgeInsets.all(16.0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            'Changer de mot de passe',
-            style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold),
-          ),
-          SizedBox(height: 16.0),
-          TextField(
-            controller: _ancienMotDePasseController,
-            obscureText: true,
-            decoration: InputDecoration(labelText: 'Ancien mot de passe'),
-          ),
-          SizedBox(height: 16.0),
-          TextField(
-            controller: _nouveauMotDePasseController,
-            obscureText: true,
-            decoration: InputDecoration(labelText: 'Nouveau mot de passe'),
-          ),
-          SizedBox(height: 16.0),
-          TextField(
-            controller: _confirmationMotDePasseController,
-            obscureText: true,
-            decoration: InputDecoration(labelText: 'Confirmer le mot de passe'),
-          ),
-          SizedBox(height: 16.0),
-          ElevatedButton(
-            onPressed: () {
-              _changerMotDePasse();
-            },
-            child: Text('Enregistrer'),
-          ),
-          if (_errorMessage.isNotEmpty)
-            Padding(
-              padding: EdgeInsets.only(top: 16.0),
-              child: Text(
-                _errorMessage,
-                style: TextStyle(color: Colors.red),
-              ),
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Changer de mot de passe'),
+      ),
+      body: Container(
+        padding: EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              'Changer de mot de passe',
+              style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold),
             ),
-        ],
+            SizedBox(height: 16.0),
+            TextField(
+              controller: _ancienMotDePasseController,
+              obscureText: true,
+              decoration: InputDecoration(labelText: 'Ancien mot de passe'),
+            ),
+            SizedBox(height: 16.0),
+            TextField(
+              controller: _nouveauMotDePasseController,
+              obscureText: true,
+              decoration: InputDecoration(labelText: 'Nouveau mot de passe'),
+            ),
+            SizedBox(height: 16.0),
+            TextField(
+              controller: _confirmationMotDePasseController,
+              obscureText: true,
+              decoration:
+              InputDecoration(labelText: 'Confirmer le mot de passe'),
+            ),
+            SizedBox(height: 16.0),
+            ElevatedButton(
+              onPressed: () {
+                _changerMotDePasse();
+              },
+              child: Text('Enregistrer'),
+            ),
+            if (_errorMessage.isNotEmpty)
+              Padding(
+                padding: EdgeInsets.only(top: 16.0),
+                child: Text(
+                  _errorMessage,
+                  style: TextStyle(color: Colors.red),
+                ),
+              ),
+          ],
+        ),
       ),
     );
   }
 
-  void _changerMotDePasse() {
+  Future<void> _changerMotDePasse() async {
     String ancienMotDePasse = _ancienMotDePasseController.text;
     String nouveauMotDePasse = _nouveauMotDePasseController.text;
     String confirmationMotDePasse = _confirmationMotDePasseController.text;
@@ -231,7 +300,11 @@ class _MotDePassePageState extends State<MotDePassePage> {
     }
 
     // Effectuer les opérations nécessaires pour changer le mot de passe
-    // ...
+    basedd bdd = basedd();
+    await bdd.initialDb();
+    int id_ = widget.data as int;
+    print(id_);
+    bdd.updateData("UPDATE auth SET mdp='$nouveauMotDePasse' WHERE iduser='$id_'");
 
     // Réinitialiser les champs de saisie
     _ancienMotDePasseController.clear();
@@ -242,10 +315,21 @@ class _MotDePassePageState extends State<MotDePassePage> {
       _errorMessage = '';
     });
 
-    // Afficher un message de succès ou de redirection vers une autre page
-    // ...
+    // Afficher un SnackBar avec le message de succès
+    _showSuccessSnackBar('Le mot de passe a été changé avec succès.');
+  }
+
+  void _showSuccessSnackBar(String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(message),
+        backgroundColor: Colors.green,
+      ),
+    );
   }
 }
+
+
 
 class PreferenceNotificationPage extends StatefulWidget {
   @override
@@ -474,8 +558,6 @@ class ConfidentialitePage extends StatefulWidget {
 class _ConfidentialitePageState extends State<ConfidentialitePage> {
   bool _isProfileVisible = true;
   String _postVisibility = 'public';
-  String _contactEmail = '';
-  String _contactPhone = '';
   bool _subscribeToNewsletter = true;
   bool _enablePushNotifications = true;
   bool _locationPermission = true;
@@ -497,11 +579,7 @@ class _ConfidentialitePageState extends State<ConfidentialitePage> {
           SwitchListTile(
             title: Text('Visibilité du profil'),
             value: _isProfileVisible,
-            onChanged: (value) {
-              setState(() {
-                _isProfileVisible = value;
-              });
-            },
+            onChanged: _handleProfileVisibilityChanged,
           ),
           ListTile(
             title: Text('Confidentialité des publications'),
@@ -525,33 +603,7 @@ class _ConfidentialitePageState extends State<ConfidentialitePage> {
               }).toList(),
             ),
           ),
-          TextFormField(
-            initialValue: _contactEmail,
-            decoration: InputDecoration(labelText: 'Adresse e-mail'),
-            onChanged: (value) {
-              setState(() {
-                _contactEmail = value;
-              });
-            },
-          ),
-          TextFormField(
-            initialValue: _contactPhone,
-            decoration: InputDecoration(labelText: 'Numéro de téléphone'),
-            onChanged: (value) {
-              setState(() {
-                _contactPhone = value;
-              });
-            },
-          ),
-          SwitchListTile(
-            title: Text('Abonnement aux newsletters'),
-            value: _subscribeToNewsletter,
-            onChanged: (value) {
-              setState(() {
-                _subscribeToNewsletter = value;
-              });
-            },
-          ),
+
           SwitchListTile(
             title: Text('Notifications push'),
             value: _enablePushNotifications,
@@ -579,46 +631,9 @@ class _ConfidentialitePageState extends State<ConfidentialitePage> {
               });
             },
           ),
-          SwitchListTile(
-            title: Text('Journal d\'activité'),
-            value: _activityLogging,
-            onChanged: (value) {
-              setState(() {
-                _activityLogging = value;
-              });
-            },
-          ),
-          ListTile(
-            title: Text('Visibilité par défaut des publications'),
-            subtitle: Text('La visibilité par défaut des nouvelles publications'),
-            trailing: DropdownButton<String>(
-              value: _defaultPostVisibility,
-              onChanged: (newValue) {
-                setState(() {
-                  _defaultPostVisibility = newValue!;
-                });
-              },
-              items: <String>[
-                'public',
-                'amis uniquement',
-                'privé',
-              ].map<DropdownMenuItem<String>>((String value) {
-                return DropdownMenuItem<String>(
-                  value: value,
-                  child: Text(value),
-                );
-              }).toList(),
-            ),
-          ),
-          SwitchListTile(
-            title: Text('Messagerie sécurisée'),
-            value: _enableSecureMessaging,
-            onChanged: (value) {
-              setState(() {
-                _enableSecureMessaging = value;
-              });
-            },
-          ),
+
+
+
           SwitchListTile(
             title: Text('Consentement de suivi'),
             value: _enableTrackingConsent,
@@ -632,7 +647,19 @@ class _ConfidentialitePageState extends State<ConfidentialitePage> {
       ),
     );
   }
+
+  void _handleProfileVisibilityChanged(bool value) {
+    setState(() {
+      _isProfileVisible = value;
+    });
+  }
 }
+
+
+
+
+
+
 
 class LanguePage extends StatefulWidget {
   @override
@@ -640,7 +667,9 @@ class LanguePage extends StatefulWidget {
 }
 
 class _LanguePageState extends State<LanguePage> {
-  String _selectedLanguage = 'English'; // Langue par défaut
+  String _selectedLanguage = 'English';
+  bool _realTimeTranslation = false;
+  bool _languageNotifications = false;
 
   List<String> _languages = [
     'English',
@@ -649,6 +678,156 @@ class _LanguePageState extends State<LanguePage> {
     'German',
     'Italian',
   ];
+
+  void _toggleRealTimeTranslation(bool value) {
+    setState(() {
+      _realTimeTranslation = value;
+      // Code to enable/disable real-time translation
+    });
+  }
+
+  void _openRegionalSettings() {
+    String selectedRegion = 'Sud'; // Default region
+    String selectedTimezone = 'Europe/Paris'; // Default timezone
+
+    showDialog(
+      context: context,
+      builder: (context) {
+        return StatefulBuilder(
+          builder: (BuildContext context, StateSetter setState) {
+            return AlertDialog(
+              title: Text('Paramètres régionaux'),
+              content: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  ListTile(
+                    title: Text('Région'),
+                    trailing: DropdownButton<String>(
+                      value: selectedRegion,
+                      onChanged: (String? newValue) {
+                        setState(() {
+                          selectedRegion = newValue!;
+                        });
+                      },
+                      items: [
+                        'Sud',
+                        'Hauts-de-France',
+                        'Île-de-France',
+                        'Normandie',
+                        'Bretagne',
+                      ].map<DropdownMenuItem<String>>((String value) {
+                        return DropdownMenuItem<String>(
+                          value: value,
+                          child: Text(value),
+                        );
+                      }).toList(),
+                    ),
+                  ),
+                  ListTile(
+                    title: Text('Fuseau horaire'),
+                    trailing: DropdownButton<String>(
+                      value: selectedTimezone,
+                      onChanged: (String? newValue) {
+                        setState(() {
+                          selectedTimezone = newValue!;
+                        });
+                      },
+                      items: [
+                        'Europe/Paris',
+                        'Europe/London',
+                        'Europe/Berlin',
+                        'Europe/Rome',
+                        'Europe/Madrid',
+                      ].map<DropdownMenuItem<String>>((String value) {
+                        return DropdownMenuItem<String>(
+                          value: value,
+                          child: Text(value),
+                        );
+                      }).toList(),
+                    ),
+                  ),
+                ],
+              ),
+              actions: [
+                ElevatedButton(
+                  onPressed: () {
+                    // Code to save regional settings and close the dialog
+                    Navigator.of(context).pop();
+                  },
+                  child: Text('Enregistrer'),
+                ),
+              ],
+            );
+          },
+        );
+      },
+    );
+  }
+
+
+
+
+  void _toggleLanguageNotifications(bool value) {
+    setState(() {
+      _languageNotifications = value;
+      // Code to enable/disable language notifications
+    });
+  }
+
+  void _changeInterfaceLanguage(String? language) {
+    if (language != null) {
+      setState(() {
+        _selectedLanguage = language;
+        // Code to change the interface language
+        // This may involve loading new language resources
+        // and restarting certain parts of the interface to apply the changes
+      });
+    }
+  }
+
+  void _downloadLanguagePacks() {
+    // Code to download and install additional language packs
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: Text('Téléchargement des packs de langue'),
+          content: Text('Téléchargez et installez des packs de langue supplémentaires ici.'),
+          actions: [
+            ElevatedButton(
+              onPressed: () {
+                // Code to start the download process
+                Navigator.of(context).pop();
+              },
+              child: Text('Télécharger'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void _resetDefaultLanguage() {
+    // Code to reset the application's default language
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: Text('Réinitialisation de la langue par défaut'),
+          content: Text('Êtes-vous sûr de vouloir réinitialiser la langue par défaut ?'),
+          actions: [
+            ElevatedButton(
+              onPressed: () {
+                // Code to reset the default language
+                Navigator.of(context).pop();
+              },
+              child: Text('Réinitialiser'),
+            ),
+          ],
+        );
+      },
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -662,11 +841,7 @@ class _LanguePageState extends State<LanguePage> {
             title: Text('Langue'),
             trailing: DropdownButton<String>(
               value: _selectedLanguage,
-              onChanged: (newValue) {
-                setState(() {
-                  _selectedLanguage = newValue!;
-                });
-              },
+              onChanged: _changeInterfaceLanguage,
               items: _languages.map((language) {
                 return DropdownMenuItem<String>(
                   value: language,
@@ -678,55 +853,36 @@ class _LanguePageState extends State<LanguePage> {
           ListTile(
             title: Text('Traduction en temps réel'),
             trailing: Switch(
-              value: true, // Valeur par défaut activée
-              onChanged: (newValue) {
-                // Code pour gérer l'activation/désactivation de la traduction en temps réel
-              },
+              value: _realTimeTranslation,
+              onChanged: _toggleRealTimeTranslation,
             ),
           ),
           ListTile(
             title: Text('Paramètres régionaux'),
             trailing: IconButton(
               icon: Icon(Icons.settings),
-              onPressed: () {
-                // Code pour accéder aux paramètres régionaux et les personnaliser
-              },
+              onPressed: _openRegionalSettings,
             ),
           ),
           ListTile(
             title: Text('Notifications linguistiques'),
             trailing: Switch(
-              value: true, // Valeur par défaut activée
-              onChanged: (newValue) {
-                // Code pour gérer l'activation/désactivation des notifications linguistiques
-              },
-            ),
-          ),
-          ListTile(
-            title: Text('Changement de langue de l\'interface utilisateur'),
-            trailing: IconButton(
-              icon: Icon(Icons.language),
-              onPressed: () {
-                // Code pour changer la langue de l'interface utilisateur
-              },
+              value: _languageNotifications,
+              onChanged: _toggleLanguageNotifications,
             ),
           ),
           ListTile(
             title: Text('Téléchargement des packs de langue'),
             trailing: IconButton(
               icon: Icon(Icons.cloud_download),
-              onPressed: () {
-                // Code pour télécharger et installer des packs de langue supplémentaires
-              },
+              onPressed: _downloadLanguagePacks,
             ),
           ),
           ListTile(
             title: Text('Réinitialisation de la langue par défaut'),
             trailing: IconButton(
               icon: Icon(Icons.restore),
-              onPressed: () {
-                // Code pour réinitialiser la langue par défaut de l'application
-              },
+              onPressed: _resetDefaultLanguage,
             ),
           ),
         ],

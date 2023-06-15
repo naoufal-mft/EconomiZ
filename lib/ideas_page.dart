@@ -23,7 +23,7 @@ class BudgetIdeas extends StatelessWidget {
             budgetIdeas: getActivities(),
           ),
           CategorySection(
-            category: 'Shopping',
+            category: 'Achats',
             budgetIdeas: getShops(),
           ),
         ],

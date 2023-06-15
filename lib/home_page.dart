@@ -5,11 +5,14 @@ import 'basedd.dart';
 import 'profil.dart';
 import 'Charges_page.dart';
 import 'dart:math';
+import 'ideas_page.dart';
 
 
 var charge = 0;
 
 class HomePage extends StatelessWidget {
+  final int data;
+  HomePage({required this.data});
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -17,13 +20,14 @@ class HomePage extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.cyan,
       ),
-      home: MyHomePage(title: "Page d'Accueil"),
+      home: MyHomePage(title: "Page d'Accueil",data:data),
     );
   }
 }
 
 class MyHomePage extends StatefulWidget {
-  MyHomePage({Key? key, required this.title}) : super(key: key);
+  final int data;
+  MyHomePage({Key? key, required this.title, required this.data}) : super(key: key);
 
   final String title;
 
@@ -199,7 +203,31 @@ class _MyHomePageState extends State<MyHomePage> {
                         onTap: () {
                           Navigator.push(
                             context,
-                            MaterialPageRoute(builder: (context) => ProfilePage()),
+                            MaterialPageRoute(builder: (context) => BudgetIdeas()),
+                          );
+                        },
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(
+                              Icons.lightbulb,
+                              size: 32,
+                              color: Colors.white,
+                            ),
+                            Text(
+                              'Idées',
+                              style: TextStyle(color: Colors.white),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                    Expanded(
+                      child: InkWell(
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context) => ProfilePage(data:widget.data as int)),
                           );
                         },
                         child: Column(

@@ -36,7 +36,6 @@ class BudgetPage extends StatefulWidget {
 class _BudgetPageState extends State<BudgetPage> {
   Map<String, double> categoryAmounts = {
     'Revenus': 0.0,
-    'Dépenses': 0.0,
     'Charges': 0.0,
     'Épargne': 0.0,
   };
@@ -114,11 +113,11 @@ class _BudgetPageState extends State<BudgetPage> {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             Padding(
-              padding: EdgeInsets.all(20.0),
+              padding: EdgeInsets.all(40.0),
               child: Text(
-                'Total des Catégories',
+                'Total des Catégories :',
                 style: TextStyle(
-                  fontSize: 18.0,
+                  fontSize: 28.0,
                   fontWeight: FontWeight.bold,
                   color: Colors.white,
                 ),
@@ -137,15 +136,7 @@ class _BudgetPageState extends State<BudgetPage> {
                       addAmountToCategory('Revenus', amount);
                     },
                   ),
-                  SizedBox(height: 10.0),
-                  CategoryItem(
-                    categoryName: 'Dépenses',
-                    amount: categoryAmounts['Dépenses']!,
-                    icon: Icons.shopping_cart,
-                    onAddAmount: (amount) {
-                      addAmountToCategory('Dépenses', amount);
-                    },
-                  ),
+
                   SizedBox(height: 10.0),
                   CategoryItem(
                     categoryName: 'Charges',

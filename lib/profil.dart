@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'parametre.dart';
 
 class ProfilePage extends StatelessWidget {
+  final int data;
+  ProfilePage({required this.data});
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
@@ -21,8 +23,8 @@ class ProfilePage extends StatelessWidget {
         ),
         body: TabBarView(
           children: [
-            MonProfilPage(),
-            MotDePassePage(),
+            MonProfilPage(data:data),
+            MotDePassePage(data:data),
             PreferenceNotificationPage(),
             ConfidentialitePage(),
             LanguePage(),

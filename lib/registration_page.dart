@@ -32,9 +32,9 @@ class _RegistrationPageState extends State<RegistrationPage> with SingleTickerPr
 
   String? selectedRegion;
   List<String> regions = [
-    'Région 1',
-    'Région 2',
-    'Région 3'
+    'Nord',
+    'Sud',
+    'Paris'
   ];
 
   TextEditingController nbreEnfantsController =
