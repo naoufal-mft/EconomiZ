@@ -123,7 +123,7 @@ class depenses extends StatelessWidget {
       appBar: AppBar(
         title: const Text("Mes Depenses"),
         centerTitle: true,
-        backgroundColor: Colors.cyan[700],
+        backgroundColor: Colors.cyan,
       ),
       body: Container(
         padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 30),
