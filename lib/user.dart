@@ -14,19 +14,20 @@ class User{
   }
 
   //fonction de calcul de proposition de depenses
-  /**
-   * salaire double : salaire du user
-   * pourcentage Map : dictionnaire contenant la paire (depenses,pourcentage de la depense par raport au budget
-   *
-   * retourne une Map de proposition de depenses dont la clé correspond au nom de la depense
-   */
   Map<String,double> calculatePercentageValues(double salaire, Map<String,double> pourcentages) {
 
     var percentageValues = Map<String,double>();
+    pourcentages.forEach((cle,valeur) =>
+    pourcentages[cle] = 0);
+    if(salaire<100){
+        percentageValues['epargne']=salaire;
+        return percentageValues;
+    }
     pourcentages.forEach((cle,valeur) =>
         pourcentages[cle] = (salaire*valeur)/100);
     return percentageValues;
   }
 
+  var exemple ={'epargne':20,'shopping':10,'restaurant':25,'voyage':35,'imprevu':10};
 
 }
