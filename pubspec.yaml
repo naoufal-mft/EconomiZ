@@ -70,8 +70,6 @@ flutter:
     - assets/eco.gif
     - assets/main.png
     - assets/econo.gif
-
-    - assets/logo2.png
     - assets/mesdepenses.png
     - assets/monprofile.png
   # The following line ensures that the Material Icons font is

@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'basedd.dart';
 import 'registration_page.dart';
-import 'budget_page.dart';
+import 'home_page.dart';
+
 
 class CustomLoginPage extends StatefulWidget {
   @override
@@ -104,6 +105,13 @@ class _CustomLoginPageState extends State<CustomLoginPage> {
                     bool isAuthenticated = await database.authenticate(email, password);
                     if (isAuthenticated) {
                       print("Authentification réussi !!!!!!!!!!!!!!!!!!!!");
+                      // Redirection vers la classe de destination
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => HomePage(),
+                        ),
+                      );
                     } else {
                       // Afficher un message d'erreur si l'authentification échoue
                       showDialog(
@@ -123,6 +131,7 @@ class _CustomLoginPageState extends State<CustomLoginPage> {
                       );
                     }
                   },
+
                   style: ElevatedButton.styleFrom(
                     primary: Colors.cyan,
                     shape: RoundedRectangleBorder(
@@ -130,11 +139,12 @@ class _CustomLoginPageState extends State<CustomLoginPage> {
                     ),
                     padding: EdgeInsets.symmetric(vertical: 15.0),
                   ),
+
                   child: Text(
                     'Se connecter',
                     style: TextStyle(fontSize: 16.0),
                   ),
-                ),
+                  ),
                 SizedBox(height: 10.0),
                 TextButton(
                   onPressed: () {
@@ -239,7 +249,7 @@ class _CustomLoginPageState extends State<CustomLoginPage> {
                                           Text('Entrez un nouveau mot de passe'),
                                           TextField(
                                             onChanged: (newPassword) async {
-                                              await database.updateData('UPDATE auth  SET mdp = "$newPassword" WHERE iduser=2');
+                                              await database.updateData('UPDATE auth  SET mdp = "$newPassword" WHERE mail="$mail"');
                                               // Do something with the new password
                                             },
                                           ),
