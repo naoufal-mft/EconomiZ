@@ -3,6 +3,10 @@ import 'package:intl/intl.dart';
 import 'package:flutter/services.dart';
 import 'dart:io';
 import 'package:image_picker/image_picker.dart';
+import 'package:easy_localization/easy_localization.dart';
+
+
+
 
 
 class MonProfilPage extends StatefulWidget {
@@ -18,6 +22,7 @@ class _MonProfilPageState extends State<MonProfilPage> {
   TextEditingController _telephoneController = TextEditingController();
   DateTime? _selectedDate;
   File? _profileImage;
+  bool _hasProfileImage = false;
 
   @override
   Widget build(BuildContext context) {
@@ -34,7 +39,9 @@ class _MonProfilPageState extends State<MonProfilPage> {
                 onTap: _pickProfileImage,
                 child: CircleAvatar(
                   radius: 50,
-                  backgroundImage: _profileImage != null ? FileImage(_profileImage!) as ImageProvider<Object> : AssetImage('assets/photo_vide.png'),
+                  backgroundImage: _hasProfileImage
+                      ? FileImage(_profileImage!) as ImageProvider<Object>
+                      : AssetImage('assets/photo_vide.png'),
                 ),
               ),
               SizedBox(height: 16.0),
@@ -69,7 +76,7 @@ class _MonProfilPageState extends State<MonProfilPage> {
               TextField(
                 controller: _adresseController,
                 decoration: InputDecoration(
-                  labelText: 'Adresse',
+                  labelText: 'Adresse mail',
                 ),
               ),
               SizedBox(height: 16.0),
@@ -80,13 +87,13 @@ class _MonProfilPageState extends State<MonProfilPage> {
                 ),
                 keyboardType: TextInputType.phone,
               ),
-
               SizedBox(height: 16.0),
               ElevatedButton(
                 onPressed: () {
                   // Code pour enregistrer les modifications du profil
                   String newEmail = _emailController.text;
-                  String newDateNaissance = DateFormat('dd/MM/yyyy').format(_selectedDate!);
+                  String newDateNaissance =
+                  DateFormat('dd/MM/yyyy').format(_selectedDate!);
                   String newNom = _nomController.text;
                   String newAdresse = _adresseController.text;
                   String newTelephone = _telephoneController.text;
@@ -115,17 +122,20 @@ class _MonProfilPageState extends State<MonProfilPage> {
     if (picked != null && picked != _selectedDate) {
       setState(() {
         _selectedDate = picked;
-        _dateNaissanceController.text = DateFormat('dd/MM/yyyy').format(_selectedDate!);
+        _dateNaissanceController.text =
+            DateFormat('dd/MM/yyyy').format(_selectedDate!);
       });
     }
   }
 
   Future<void> _pickProfileImage() async {
-    final pickedFile = await ImagePicker().getImage(source: ImageSource.gallery);
+    final pickedFile =
+    await ImagePicker().getImage(source: ImageSource.gallery);
 
     if (pickedFile != null) {
       setState(() {
         _profileImage = File(pickedFile.path);
+        _hasProfileImage = true;
       });
     }
   }
@@ -133,6 +143,7 @@ class _MonProfilPageState extends State<MonProfilPage> {
   void _removeProfileImage() {
     setState(() {
       _profileImage = null;
+      _hasProfileImage = false;
     });
   }
 
@@ -146,6 +157,7 @@ class _MonProfilPageState extends State<MonProfilPage> {
     super.dispose();
   }
 }
+
 
 class MotDePassePage extends StatefulWidget {
   @override
@@ -247,7 +259,9 @@ class _MotDePassePageState extends State<MotDePassePage> {
   }
 }
 
-class PreferenceNotificationPage extends StatefulWidget {
+
+
+  class PreferenceNotificationPage extends StatefulWidget {
   @override
   _PreferenceNotificationPageState createState() =>
       _PreferenceNotificationPageState();
@@ -474,8 +488,6 @@ class ConfidentialitePage extends StatefulWidget {
 class _ConfidentialitePageState extends State<ConfidentialitePage> {
   bool _isProfileVisible = true;
   String _postVisibility = 'public';
-  String _contactEmail = '';
-  String _contactPhone = '';
   bool _subscribeToNewsletter = true;
   bool _enablePushNotifications = true;
   bool _locationPermission = true;
@@ -497,11 +509,7 @@ class _ConfidentialitePageState extends State<ConfidentialitePage> {
           SwitchListTile(
             title: Text('Visibilité du profil'),
             value: _isProfileVisible,
-            onChanged: (value) {
-              setState(() {
-                _isProfileVisible = value;
-              });
-            },
+            onChanged: _handleProfileVisibilityChanged,
           ),
           ListTile(
             title: Text('Confidentialité des publications'),
@@ -524,24 +532,6 @@ class _ConfidentialitePageState extends State<ConfidentialitePage> {
                 );
               }).toList(),
             ),
-          ),
-          TextFormField(
-            initialValue: _contactEmail,
-            decoration: InputDecoration(labelText: 'Adresse e-mail'),
-            onChanged: (value) {
-              setState(() {
-                _contactEmail = value;
-              });
-            },
-          ),
-          TextFormField(
-            initialValue: _contactPhone,
-            decoration: InputDecoration(labelText: 'Numéro de téléphone'),
-            onChanged: (value) {
-              setState(() {
-                _contactPhone = value;
-              });
-            },
           ),
           SwitchListTile(
             title: Text('Abonnement aux newsletters'),
@@ -632,7 +622,19 @@ class _ConfidentialitePageState extends State<ConfidentialitePage> {
       ),
     );
   }
+
+  void _handleProfileVisibilityChanged(bool value) {
+    setState(() {
+      _isProfileVisible = value;
+    });
+  }
 }
+
+
+
+
+
+
 
 class LanguePage extends StatefulWidget {
   @override
@@ -640,7 +642,9 @@ class LanguePage extends StatefulWidget {
 }
 
 class _LanguePageState extends State<LanguePage> {
-  String _selectedLanguage = 'English'; // Langue par défaut
+  String _selectedLanguage = 'English';
+  bool _realTimeTranslation = false;
+  bool _languageNotifications = false;
 
   List<String> _languages = [
     'English',
@@ -649,6 +653,156 @@ class _LanguePageState extends State<LanguePage> {
     'German',
     'Italian',
   ];
+
+  void _toggleRealTimeTranslation(bool value) {
+    setState(() {
+      _realTimeTranslation = value;
+      // Code to enable/disable real-time translation
+    });
+  }
+
+  void _openRegionalSettings() {
+    String selectedRegion = 'Sud'; // Default region
+    String selectedTimezone = 'Europe/Paris'; // Default timezone
+
+    showDialog(
+      context: context,
+      builder: (context) {
+        return StatefulBuilder(
+          builder: (BuildContext context, StateSetter setState) {
+            return AlertDialog(
+              title: Text('Paramètres régionaux'),
+              content: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  ListTile(
+                    title: Text('Région'),
+                    trailing: DropdownButton<String>(
+                      value: selectedRegion,
+                      onChanged: (String? newValue) {
+                        setState(() {
+                          selectedRegion = newValue!;
+                        });
+                      },
+                      items: [
+                        'Sud',
+                        'Hauts-de-France',
+                        'Île-de-France',
+                        'Normandie',
+                        'Bretagne',
+                      ].map<DropdownMenuItem<String>>((String value) {
+                        return DropdownMenuItem<String>(
+                          value: value,
+                          child: Text(value),
+                        );
+                      }).toList(),
+                    ),
+                  ),
+                  ListTile(
+                    title: Text('Fuseau horaire'),
+                    trailing: DropdownButton<String>(
+                      value: selectedTimezone,
+                      onChanged: (String? newValue) {
+                        setState(() {
+                          selectedTimezone = newValue!;
+                        });
+                      },
+                      items: [
+                        'Europe/Paris',
+                        'Europe/London',
+                        'Europe/Berlin',
+                        'Europe/Rome',
+                        'Europe/Madrid',
+                      ].map<DropdownMenuItem<String>>((String value) {
+                        return DropdownMenuItem<String>(
+                          value: value,
+                          child: Text(value),
+                        );
+                      }).toList(),
+                    ),
+                  ),
+                ],
+              ),
+              actions: [
+                ElevatedButton(
+                  onPressed: () {
+                    // Code to save regional settings and close the dialog
+                    Navigator.of(context).pop();
+                  },
+                  child: Text('Enregistrer'),
+                ),
+              ],
+            );
+          },
+        );
+      },
+    );
+  }
+
+
+
+
+  void _toggleLanguageNotifications(bool value) {
+    setState(() {
+      _languageNotifications = value;
+      // Code to enable/disable language notifications
+    });
+  }
+
+  void _changeInterfaceLanguage(String? language) {
+    if (language != null) {
+      setState(() {
+        _selectedLanguage = language;
+        // Code to change the interface language
+        // This may involve loading new language resources
+        // and restarting certain parts of the interface to apply the changes
+      });
+    }
+  }
+
+  void _downloadLanguagePacks() {
+    // Code to download and install additional language packs
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: Text('Téléchargement des packs de langue'),
+          content: Text('Téléchargez et installez des packs de langue supplémentaires ici.'),
+          actions: [
+            ElevatedButton(
+              onPressed: () {
+                // Code to start the download process
+                Navigator.of(context).pop();
+              },
+              child: Text('Télécharger'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void _resetDefaultLanguage() {
+    // Code to reset the application's default language
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: Text('Réinitialisation de la langue par défaut'),
+          content: Text('Êtes-vous sûr de vouloir réinitialiser la langue par défaut ?'),
+          actions: [
+            ElevatedButton(
+              onPressed: () {
+                // Code to reset the default language
+                Navigator.of(context).pop();
+              },
+              child: Text('Réinitialiser'),
+            ),
+          ],
+        );
+      },
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -662,11 +816,7 @@ class _LanguePageState extends State<LanguePage> {
             title: Text('Langue'),
             trailing: DropdownButton<String>(
               value: _selectedLanguage,
-              onChanged: (newValue) {
-                setState(() {
-                  _selectedLanguage = newValue!;
-                });
-              },
+              onChanged: _changeInterfaceLanguage,
               items: _languages.map((language) {
                 return DropdownMenuItem<String>(
                   value: language,
@@ -678,55 +828,36 @@ class _LanguePageState extends State<LanguePage> {
           ListTile(
             title: Text('Traduction en temps réel'),
             trailing: Switch(
-              value: true, // Valeur par défaut activée
-              onChanged: (newValue) {
-                // Code pour gérer l'activation/désactivation de la traduction en temps réel
-              },
+              value: _realTimeTranslation,
+              onChanged: _toggleRealTimeTranslation,
             ),
           ),
           ListTile(
             title: Text('Paramètres régionaux'),
             trailing: IconButton(
               icon: Icon(Icons.settings),
-              onPressed: () {
-                // Code pour accéder aux paramètres régionaux et les personnaliser
-              },
+              onPressed: _openRegionalSettings,
             ),
           ),
           ListTile(
             title: Text('Notifications linguistiques'),
             trailing: Switch(
-              value: true, // Valeur par défaut activée
-              onChanged: (newValue) {
-                // Code pour gérer l'activation/désactivation des notifications linguistiques
-              },
-            ),
-          ),
-          ListTile(
-            title: Text('Changement de langue de l\'interface utilisateur'),
-            trailing: IconButton(
-              icon: Icon(Icons.language),
-              onPressed: () {
-                // Code pour changer la langue de l'interface utilisateur
-              },
+              value: _languageNotifications,
+              onChanged: _toggleLanguageNotifications,
             ),
           ),
           ListTile(
             title: Text('Téléchargement des packs de langue'),
             trailing: IconButton(
               icon: Icon(Icons.cloud_download),
-              onPressed: () {
-                // Code pour télécharger et installer des packs de langue supplémentaires
-              },
+              onPressed: _downloadLanguagePacks,
             ),
           ),
           ListTile(
             title: Text('Réinitialisation de la langue par défaut'),
             trailing: IconButton(
               icon: Icon(Icons.restore),
-              onPressed: () {
-                // Code pour réinitialiser la langue par défaut de l'application
-              },
+              onPressed: _resetDefaultLanguage,
             ),
           ),
         ],

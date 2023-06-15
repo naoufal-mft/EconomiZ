@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'parametre.dart';
+import 'package:flutter_translate/flutter_translate.dart';
 
 void main() {
   runApp(MyApp());
@@ -9,7 +11,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Votre Application',
+      title: 'Paramètres',
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
@@ -18,6 +20,9 @@ class MyApp extends StatelessWidget {
   }
 }
 
+
+
+
 class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -25,7 +30,7 @@ class HomePage extends StatelessWidget {
       length: 5,
       child: Scaffold(
         appBar: AppBar(
-          title: Text('Mon application'),
+          title: Text('Paramètres'),
           bottom: TabBar(
             tabs: [
               Tab(icon: Icon(Icons.person)),
