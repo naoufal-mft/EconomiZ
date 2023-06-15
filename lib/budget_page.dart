@@ -77,10 +77,11 @@ class _BudgetPageState extends State<BudgetPage> {
         await database.insertData(authInsertQuery);
         //await database.insertData(coordonneesInsertQuery);
         await database.insertData(infoInsertQuery);
+        if(insertedCoordonneesId!=1) {
+          String chargesUpdateQuery = "UPDATE charge  SET iduser = $insertedCoordonneesId WHERE iduser=1";
 
-        String chargesUpdateQuery = "UPDATE charge  SET iduser = $insertedCoordonneesId WHERE iduser=1";
-        await database.updateData(chargesUpdateQuery);
-
+          await database.updateData(chargesUpdateQuery);
+        }
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text('Inscription réussie !'),

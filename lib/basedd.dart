@@ -132,7 +132,25 @@ class basedd {
     return result.isNotEmpty;
   }
 
+  Future<bool> chargeExistsWithName(basedd db,String nom,int iduser) async {
+    try {
+      // Connect to the database and execute the query to check if the charge exists
 
+      List<Map<String, dynamic>> result = await db.readData(
+          "SELECT * FROM charge WHERE iduser = $iduser AND nom_charge = $nom",
+          );
+
+      // Close the database connection
+
+
+      // Return true if a record was found, indicating the charge exists
+      return result.isNotEmpty;
+    } catch (e) {
+      // Handle any potential errors
+      print('Error checking charge existence: $e');
+      return false;
+    }
+  }
 }
 
 void main() async {

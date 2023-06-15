@@ -5,11 +5,15 @@ import 'basedd.dart';
 import 'profil.dart';
 import 'Charges_page.dart';
 import 'dart:math';
+import 'login_page.dart';
+import 'package:provider/provider.dart';
 
 
 var charge = 0;
 
 class HomePage extends StatelessWidget {
+  final int iduser;
+  HomePage({required this.iduser});
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -17,13 +21,14 @@ class HomePage extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.cyan,
       ),
-      home: MyHomePage(title: "Page d'Accueil"),
+      home: MyHomePage(title: "Page d'Accueil",iduser: iduser,),
     );
   }
 }
 
 class MyHomePage extends StatefulWidget {
-  MyHomePage({Key? key, required this.title}) : super(key: key);
+  final int iduser;
+  MyHomePage({Key? key, required this.title,required this.iduser}) : super(key: key);
 
   final String title;
 
@@ -151,7 +156,7 @@ class _MyHomePageState extends State<MyHomePage> {
                         onTap: () {
                           Navigator.push(
                             context,
-                            MaterialPageRoute(builder: (context) => depenses()),
+                            MaterialPageRoute(builder: (context) => depenses(iduser:widget.iduser as int)),
                           );
                         },
                         child: Column(
@@ -229,30 +234,28 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   Future<List<GDPData>> getChartData() async {
-    var iduser = 1;
-    var loyer = 'loyer';
-    var courses = 'courses';
-    String prix_loyer;
-    String prix_Course;
+
+    int id=widget.iduser as int;
+    print("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
+    print(id);
+
+    double prix_loyer;
+
     basedd bdd = await basedd();
     await bdd.initialDb();
 
-    List<Map> result1 = await bdd.readData('SELECT * FROM charge WHERE iduser=2 and nom_charge="loyer"');
-    List<Map> result2 = await bdd.readData('SELECT * FROM charge WHERE iduser=2 and nom_charge="Courses"');
-    print("read");
-    prix_loyer = result1[0]['prix'];
-    prix_Course = result2[0]['prix'];
-    print(prix_loyer);
-    print(prix_Course);
 
-    final List<GDPData> chartData = [
-      GDPData(loyer, int.parse(prix_loyer), Colors.blue),
-      GDPData(courses, int.parse(prix_Course), Colors.green),
-      GDPData(loyer, int.parse(prix_loyer), Colors.orange),
-      GDPData(courses, int.parse(prix_Course), Colors.red),
-      GDPData(loyer, int.parse(prix_loyer), Colors.purple),
-      GDPData(courses, int.parse(prix_Course), Colors.yellow),
-    ];
+
+
+    final List<GDPData> chartData = [];
+    List<Map> result10 = await bdd.readData('SELECT * FROM charge WHERE iduser=$id');
+    print('Read Data:');
+    result10.forEach((row) {
+      String name=row['nom_charge'];
+      double prix=double.tryParse(row['prix'])?? 0.0;
+      chartData.add(GDPData(name, prix.toInt(), Colors.blue));
+    });
+
     calculateRemainingSalary(chartData);
     return chartData;
   }

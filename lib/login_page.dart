@@ -1,15 +1,18 @@
 import 'package:flutter/material.dart';
 import 'basedd.dart';
+
 import 'registration_page.dart';
 import 'home_page.dart';
 
 
-class CustomLoginPage extends StatefulWidget {
+class CustomLoginPage  extends StatefulWidget {
   @override
+
   _CustomLoginPageState createState() => _CustomLoginPageState();
 }
 
 class _CustomLoginPageState extends State<CustomLoginPage> {
+
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
   TextEditingController reponseQuestionController = TextEditingController();
@@ -103,13 +106,18 @@ class _CustomLoginPageState extends State<CustomLoginPage> {
                     final password = passwordController.text;
                     basedd database = basedd();
                     bool isAuthenticated = await database.authenticate(email, password);
+
                     if (isAuthenticated) {
                       print("Authentification réussi !!!!!!!!!!!!!!!!!!!!");
+
+                      List<Map> result2= await database.readData("SELECT * FROM auth WHERE mail = '$email' AND mdp = '$password'");
+                      int a=result2[0]['iduser'];
+
                       // Redirection vers la classe de destination
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => HomePage(),
+                          builder: (context) => HomePage(iduser: a,),
                         ),
                       );
                     } else {
