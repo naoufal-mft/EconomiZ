@@ -1,5 +1,9 @@
+import 'package:economiz/parametre.dart';
 import 'package:flutter/material.dart';
-import 'parametre.dart';
+import 'login_page.dart';
+import 'registration_page.dart';
+import 'splash_page.dart';
+import 'Charges_page.dart';import 'splash_page.dart';
 
 void main() {
   runApp(MyApp());
@@ -12,13 +16,19 @@ class MyApp extends StatelessWidget {
       title: 'Votre Application',
       theme: ThemeData(
         primarySwatch: Colors.blue,
-      ),
-      home: HomePage(),
+      ),initialRoute: '/',
+      routes: {
+        '/': (context) => SplashScreen(),
+        '/inscription': (context) => RegistrationPage(),
+        'charge' : (context) => ChargesPage(),
+      }
     );
   }
 }
 
 class HomePage extends StatelessWidget {
+  final String data;
+  HomePage({required this.data});
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
@@ -38,7 +48,7 @@ class HomePage extends StatelessWidget {
         ),
         body: TabBarView(
           children: [
-            MonProfilPage(),
+            MonProfilPage(data:data),
             MotDePassePage(),
             PreferenceNotificationPage(),
             ConfidentialitePage(),

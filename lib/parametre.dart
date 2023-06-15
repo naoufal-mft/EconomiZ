@@ -4,13 +4,19 @@ import 'package:flutter/services.dart';
 import 'dart:io';
 import 'package:image_picker/image_picker.dart';
 
+import 'basedd.dart';
+
 
 class MonProfilPage extends StatefulWidget {
+  final String data;
+  MonProfilPage({required this.data});
+
   @override
   _MonProfilPageState createState() => _MonProfilPageState();
 }
 
 class _MonProfilPageState extends State<MonProfilPage> {
+
   TextEditingController _emailController = TextEditingController();
   TextEditingController _dateNaissanceController = TextEditingController();
   TextEditingController _nomController = TextEditingController();
@@ -83,7 +89,7 @@ class _MonProfilPageState extends State<MonProfilPage> {
 
               SizedBox(height: 16.0),
               ElevatedButton(
-                onPressed: () {
+                onPressed: () async {
                   // Code pour enregistrer les modifications du profil
                   String newEmail = _emailController.text;
                   String newDateNaissance = DateFormat('dd/MM/yyyy').format(_selectedDate!);
@@ -91,6 +97,15 @@ class _MonProfilPageState extends State<MonProfilPage> {
                   String newAdresse = _adresseController.text;
                   String newTelephone = _telephoneController.text;
                   // Code pour effectuer les opérations nécessaires avec les nouvelles informations du profil
+                  basedd bdd = basedd();
+                  await bdd.initialDb();
+                  String mail = widget.data as String;
+                  print(mail);
+                  List<Map> list = await bdd.readData("SELECT * FROM auth WHERE mail = '$mail'");
+                  int id = list[0]['iduser'];
+                  print('ok$id');
+                  await bdd.updateData("UPDATE coordonnees SET Nom = '$newNom', DoB = '$newDateNaissance' WHERE iduser='$id'");
+                  await bdd.updateData("UPDATE auth SET  mail= '$newEmail' WHERE mail ='$mail' ");
                 },
                 child: Text('Enregistrer'),
               ),
