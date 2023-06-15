@@ -41,6 +41,8 @@ class basedd {
       iduser INTEGER NOT NULL,
       mail TEXT NOT NULL,
       mdp TEXT NOT NULL,
+      Question TEXT NOT NULL,
+      Réponse TEXT NOT NULL,
       
       FOREIGN KEY (iduser) REFERENCES coordonnees (idUser) ON DELETE CASCADE
     )
@@ -104,6 +106,12 @@ class basedd {
     return result.isNotEmpty;
   }
 
+  Future<bool> fortgot_password(String mail,String question, String reponse) async {
+    String sql = "SELECT * FROM auth WHERE mail='$mail' AND Question = '$question' AND Réponse = '$reponse'";
+    List<Map> result = await readData(sql);
+    return result.isNotEmpty;
+    }
+
 
 }
 
@@ -111,10 +119,12 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   basedd bdd= basedd();
-  await bdd.initialDb();
+  //await bdd.initialDb();
+  //await bdd.insertData("INSERT INTO coordonnees (Nom,Prenom,DoB) VALUES('John', 'Doe','14-08-2002')");
+  //await bdd.insertData("INSERT INTO coordonnees (Nom,Prenom,DoB) VALUES('John', 'Doe','14-08-2002')");
+  //await bdd.insertData("INSERT INTO auth VALUES(2, 'test','test','Quel est le nom de votre ville natale ?','test')");
 
-  await bdd.insertData("INSERT INTO coordonnees (Nom,Prenom,DoB) VALUES('John', 'Doe','14-08-2002')");
-  await bdd.insertData('INSERT INTO info VALUES(1,1,"seule","test","5","0")');
+  //await bdd.insertData('INSERT INTO info VALUES(2,1,"seule","test","5","0")');
   List<Map> result = await bdd.readData('SELECT * FROM info');
   print('Read Data:');
   result.forEach((row) {
@@ -122,7 +132,7 @@ void main() async {
   }
   );
 
-  List<Map> result2 = await bdd.readData('SELECT * FROM coordonnees');
+  List<Map> result2 = await bdd.readData('SELECT * FROM auth');
   print('Read Data:');
   var a = Map();
   result2.forEach((row) {
@@ -130,6 +140,13 @@ void main() async {
     print(a);
   });
 
+  List<Map> result3 = await bdd.readData('SELECT * FROM auth');
+  print('Read Data:');
+  var b = Map();
+  result3.forEach((row) {
+    b= row;
+    print(b);
+  });
 
 
 }
