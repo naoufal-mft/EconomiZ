@@ -7,8 +7,6 @@ class BudgetIdeas extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text('Idées Budget'),
-        centerTitle: true,
-        backgroundColor: Colors.cyan[700],
       ),
       body: ListView(
         children: [

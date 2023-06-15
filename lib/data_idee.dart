@@ -90,51 +90,53 @@ List<BudgetIdea> getShops() {
       category: 'Shopping',
       name: 'NoFrills Supermarché',
       details: 'Villes :\n\n'
-          'Paris\n'
           'Marseille\n'
-          'Lyon\n'
-          'Toulouse\n'
-          'Bordeaux\n\n'
+          'Toulouse\n\n'
           'Détails :\n\n'
           'NoFrills Supermarché est une chaîne présente dans plusieurs grandes villes de France.\n'
           'Ils proposent une large gamme de produits alimentaires et ménagers à des prix abordables.\n'
           'Les magasins NoFrills se concentrent principalement sur les produits de base et les marques génériques pour offrir des économies significatives aux consommateurs.\n'
           'Ils offrent également des promotions régulières pour aider les clients à réaliser davantage d\'économies.',
-      icon: Icons.shopping_cart,
+           icon: Icons.shopping_cart,
     ),
     BudgetIdea(
       category: 'Shopping',
-      name: 'EasyDiscount Supermarché',
+      name: 'Aldi Supermarché',
       details: 'Villes :\n\n'
-          'Lille\n'
+          'Valenciennes\n'
+          'Douai\n'
+          'Anger\n'
+          'Bourges\n'
+          'Orléans\n'
+          'Limoges\n'
+          'Nantes\n\n'
+          "ALDI se trouve dans plein d'autres villes"
+          'Détails :\n\n'
+          'Aldi Supermarché est une chaîne présente dans plusieurs grandes villes de France, y compris Paris, Marseille, Lyon, Toulouse, Bordeaux, Strasbourg et Nantes.\n'
+          'Ils proposent une large gamme de produits alimentaires et ménagers à des prix abordables.\n'
+          'Les magasins Aldi se concentrent principalement sur les produits de base et les marques génériques pour offrir des économies significatives aux consommateurs.\n'
+          "Ils offrent également des promotions régulières pour aider les clients à réaliser davantage d'économies.",
+          icon: Icons.shopping_cart,
+    ),
+
+    BudgetIdea(
+      category: 'Shopping',
+      name: 'Colruyt Supermarché',
+      details: 'Villes :\n\n'
+          'Paris\n'
+          'Marseille\n'
+          'Lyon\n'
+          'Toulouse\n'
+          'Bordeaux\n'
           'Nantes\n'
-          'Strasbourg\n'
-          'Rennes\n'
-          'Montpellier\n\n'
+          'Rennes\n\n'
+          "Colruyt se trouve dans plein d'autres villes"
           'Détails :\n\n'
-          'EasyDiscount Supermarché est une enseigne présente dans différentes villes de France.\n'
-          'Ils se spécialisent dans les produits de base à des prix compétitifs.\n'
-          'Les magasins EasyDiscount réduisent les coûts en minimisant les dépenses liées à la présentation des produits, ce qui permet de proposer des prix attractifs aux consommateurs.\n'
-          'Ils proposent une large sélection de produits alimentaires, de produits d\'hygiène et d\'articles ménagers à prix abordables.\n'
-          'Des réductions et des offres spéciales sont régulièrement disponibles.',
-      icon: Icons.shopping_cart,
-    ),
-    BudgetIdea(
-      category: 'Shopping',
-      name: 'DiscountMax Supermarché',
-      details: 'Villes :\n\n'
-          'Nice\n'
-          'Toulon\n'
-          'Grenoble\n'
-          'Angers\n'
-          'Perpignan\n\n'
-          'Détails :\n\n'
-          'DiscountMax Supermarché est une chaîne présente dans plusieurs villes de France\n'
-          'Ils sont connus pour leur approche axée sur la réduction des coûts, ce qui leur permet de proposer des produits de qualité à des prix abordables.\n'
-          "Les magasins DiscountMax offrent un large assortiment de produits, notamment des produits alimentaires, des produits frais, des produits d'hygiène et des articles ménagers, le tout à des prix bas.\n"
-          "Ils optimisent leur chaîne d'approvisionnement et travaillent en étroite collaboration avec les producteurs pour obtenir des produits de qualité tout en maintenant des prix compétitifs..\n"
-          'En plus de leurs prix bas, DiscountMax propose régulièrement des offres promotionnelles et des réductions sur les produits de marque ainsi que sur les marques génériques. Cela permet aux clients de réaliser des économies supplémentaires lors de leurs achats..',
-      icon: Icons.shopping_cart,
+          'Colruyt Supermarché est une chaîne présente dans plusieurs grandes villes de France, y compris Paris, Marseille, Lyon, Toulouse, Bordeaux, Nantes et Rennes.\n'
+          'Ils proposent une large gamme de produits alimentaires, ainsi que des articles ménagers, des produits de soins personnels et des produits non alimentaires.\n'
+          "Colruyt se distingue par sa politique de prix bas et son engagement envers la durabilité et l'économie circulaire.\n"
+          'Ils offrent également un service de collecte en ligne appelé "Collect&Go" pour plus de commodité.',
+          icon: Icons.shopping_cart,
     ),
   ];
 }
