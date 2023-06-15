@@ -26,8 +26,8 @@ class _CustomLoginPageState extends State<CustomLoginPage> {
         decoration: BoxDecoration(
           gradient: LinearGradient(
             colors: [
-              Colors.cyan.shade900,
-              Colors.cyan.shade500,
+              Colors.lightBlue.shade900,
+              Colors.lightBlue.shade500,
             ],
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
@@ -48,7 +48,7 @@ class _CustomLoginPageState extends State<CustomLoginPage> {
                         return LinearGradient(
                           colors: [
                             Colors.white,
-                            Colors.white.withOpacity(0.8),
+                            Colors.white.withOpacity(0.2),
                             Colors.transparent,
                           ],
                           stops: [0.0, 0.8, 1.0],

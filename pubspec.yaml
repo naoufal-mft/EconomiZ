@@ -56,7 +56,9 @@ flutter:
   assets:
     - assets/user.png
     - assets/eco.gif
-    - assets/6oa.gif
+    - assets/main.png
+    - assets/econo.gif
+
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in
   # the material Icons class.
