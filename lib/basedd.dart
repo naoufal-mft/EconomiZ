@@ -19,6 +19,10 @@ class basedd {
     String path = join(databasepath, 'budget.db');
     Database mydb = await openDatabase(
         path,version:1, onCreate: _onCreate, onUpgrade: _onUpgrade);
+<<<<<<< HEAD
+=======
+    print(" onCreate =====================================");
+>>>>>>> origin/FrontKaoutar
     return mydb;
   }
 
@@ -33,7 +37,7 @@ class basedd {
       Nom TEXT NOT NULL,
       Prenom TEXT NOT NULL, 
       DoB DATE NOT NULL
-      
+    
     )
     
     ''');
@@ -138,8 +142,11 @@ void main() async {
   basedd bdd= basedd();
   await bdd.initialDb();
 
+<<<<<<< HEAD
 
 
+=======
+>>>>>>> origin/FrontKaoutar
   List<Map> result = await bdd.readData('SELECT * FROM auth');
   print('Read Data:');
   result.forEach((row) {
