@@ -590,15 +590,7 @@ class _ConfidentialitePageState extends State<ConfidentialitePage> {
               }).toList(),
             ),
           ),
-          SwitchListTile(
-            title: Text('Abonnement aux newsletters'),
-            value: _subscribeToNewsletter,
-            onChanged: (value) {
-              setState(() {
-                _subscribeToNewsletter = value;
-              });
-            },
-          ),
+
           SwitchListTile(
             title: Text('Notifications push'),
             value: _enablePushNotifications,
@@ -626,46 +618,9 @@ class _ConfidentialitePageState extends State<ConfidentialitePage> {
               });
             },
           ),
-          SwitchListTile(
-            title: Text('Journal d\'activité'),
-            value: _activityLogging,
-            onChanged: (value) {
-              setState(() {
-                _activityLogging = value;
-              });
-            },
-          ),
-          ListTile(
-            title: Text('Visibilité par défaut des publications'),
-            subtitle: Text('La visibilité par défaut des nouvelles publications'),
-            trailing: DropdownButton<String>(
-              value: _defaultPostVisibility,
-              onChanged: (newValue) {
-                setState(() {
-                  _defaultPostVisibility = newValue!;
-                });
-              },
-              items: <String>[
-                'public',
-                'amis uniquement',
-                'privé',
-              ].map<DropdownMenuItem<String>>((String value) {
-                return DropdownMenuItem<String>(
-                  value: value,
-                  child: Text(value),
-                );
-              }).toList(),
-            ),
-          ),
-          SwitchListTile(
-            title: Text('Messagerie sécurisée'),
-            value: _enableSecureMessaging,
-            onChanged: (value) {
-              setState(() {
-                _enableSecureMessaging = value;
-              });
-            },
-          ),
+
+
+
           SwitchListTile(
             title: Text('Consentement de suivi'),
             value: _enableTrackingConsent,
