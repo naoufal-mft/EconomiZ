@@ -54,6 +54,7 @@ class basedd {
       nom_charge TEXT NOT NULL,
       prix TEXT NOT NULL,
       type TEXT NOT NULL,
+      mois TEXT NOT NULL,
       iduser INTEGER NOT NULL,
      
       FOREIGN KEY (iduser) REFERENCES coordonnees (idUser) ON DELETE CASCADE
@@ -121,8 +122,13 @@ void main() async {
     print(row);
   });
 
-  bdd.insertData("INSERT INTO coordonnees (Nom,Prenom,DoB) VALUES('John', 'Doe','14-08-2002')");
-  bdd.insertData("INSERT INTO charge (nom_charge,prix,type,iduser) VALUES('loyer', '600','fixe','2')");
+  bdd.insertData("INSERT INTO coordonnees (Nom,Prenom,DoB)  VALUES('John', 'Doe','14-08-2002')");
+  bdd.insertData("INSERT INTO charge (nom_charge,prix,type,mois,iduser) VALUES('loyer', '600','fixe','09','2')");
+  bdd.insertData("INSERT INTO charge (nom_charge,prix,type,mois,iduser) VALUES('Abonnement', '100','fixe','09','2')");
+  bdd.insertData("INSERT INTO charge (nom_charge,prix,type,mois,iduser) VALUES('Courses', '250','fixe','09','2')");
+  bdd.insertData("INSERT INTO charge (nom_charge,prix,type,mois,iduser) VALUES('Sport', '30','fixe','09','2')");
+  bdd.insertData("INSERT INTO charge (nom_charge,prix,type,mois,iduser) VALUES('Transport', '50','fixe','09','2')");
+  bdd.insertData("INSERT INTO charge (nom_charge,prix,type,mois,iduser) VALUES('Voyage', '100','fixe','09','2')");
 
   List<Map> result2 = await bdd.readData('SELECT * FROM coordonnees');
   print('Read Data:');
