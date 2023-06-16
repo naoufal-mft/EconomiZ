@@ -222,7 +222,7 @@ class _MyHomePageState extends State<MyHomePage> {
                         onTap: () {
                           Navigator.push(
                             context,
-                            MaterialPageRoute(builder: (context) => ChargesPage()),
+                            MaterialPageRoute(builder: (context) => ChargesPage(iduser:widget.data as int)),
                           );
                         },
                         child: Column(

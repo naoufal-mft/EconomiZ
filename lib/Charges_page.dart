@@ -11,6 +11,8 @@ class Charge {
 }
 
 class ChargesPage extends StatefulWidget {
+  final int iduser;
+  ChargesPage({this.iduser=1});
   @override
   _ChargesPageState createState() => _ChargesPageState();
 }
@@ -30,12 +32,12 @@ class _ChargesPageState extends State<ChargesPage> {
 
   Future<void> ajouterCharge(String nom, double montant) async {
     basedd database = basedd();
-
+    int id=widget.iduser as int;
     // Convertir le montant en chaîne de caractères
     String montantStr = montant.toString();
 
     // Insérer les données dans la table "charge"
-    String insertQuery = "INSERT INTO charge(nom_charge, prix, type ,iduser) VALUES('$nom', '$montantStr', 'Fixe','1')";
+    String insertQuery = "INSERT INTO charge(nom_charge, prix, type ,iduser) VALUES('$nom', '$montantStr', 'Fixe',$id)";
     await database.insertData(insertQuery);
     nomController.clear();
     montantController.clear();
