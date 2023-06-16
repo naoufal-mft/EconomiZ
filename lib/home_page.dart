@@ -37,7 +37,7 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   List<GDPData> _chartData = [];
-  int remainingSalary = 15000;
+  late int remainingSalary;
   TooltipBehavior _tooltipBehavior = TooltipBehavior(enable: true);
 
   @override
@@ -48,13 +48,55 @@ class _MyHomePageState extends State<MyHomePage> {
 
   Future<void> initializeChartData() async {
     List<GDPData> data = await getChartData();
+    await calculateRemainingSalary(data);
     setState(() {
       _chartData = data;
     });
   }
+  Future<void> calculateRemainingSalary(List<GDPData> chartData) async {
+    basedd bdd = await basedd();
+    await bdd.initialDb();
+    int id=widget.data as int;
+    List<Map> result10 = await bdd.readData('SELECT * FROM info WHERE iduser=$id');
+    String revenu=result10[0]['revenu'];
+    double prix=double.tryParse(revenu)?? 0.0;
+    int totalCharges = chartData.fold(0, (sum, data) => sum + data.gdp);
+    remainingSalary = prix.toInt() - totalCharges;
+  }
+  Future<List<GDPData>> getChartData() async {
+
+    int id=widget.data as int;
+    print("aaaaa");
+    print(id);
+
+    double prix_loyer;
+
+    basedd bdd = await basedd();
+    await bdd.initialDb();
+
+
+
+    final List<GDPData> chartData = [];
+    List<Map> result10 = await bdd.readData('SELECT * FROM charge WHERE iduser=$id');
+    print('Read Data:');
+    result10.forEach((row) {
+      String name=row['nom_charge'];
+      double prix=double.tryParse(row['prix'])?? 0.0;
+      chartData.add(GDPData(name, prix.toInt(), Colors.blue));
+    });
+
+    calculateRemainingSalary(chartData);
+    return chartData;
+  }
 
   @override
   Widget build(BuildContext context) {
+    // Calcul des montants
+    double epargne = remainingSalary * 0.20;
+    double shopping = remainingSalary * 0.10;
+    double restaurant = remainingSalary * 0.25;
+    double voyage = remainingSalary * 0.35;
+    double imprevu = remainingSalary * 0.10;
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(
@@ -147,15 +189,16 @@ class _MyHomePageState extends State<MyHomePage> {
               color: Colors.cyan,
               child: Container(
                 height: 56,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                child: Wrap(
+                  alignment: WrapAlignment.spaceEvenly,
+                  spacing:16,
                   children: [
                     Expanded(
                       child: InkWell(
                         onTap: () {
                           Navigator.push(
                             context,
-                            MaterialPageRoute(builder: (context) => depenses()),
+                            MaterialPageRoute(builder: (context) => depenses(iduser: widget.data as int,)),
                           );
                         },
                         child: Column(
@@ -198,6 +241,56 @@ class _MyHomePageState extends State<MyHomePage> {
                         ),
                       ),
                     ),
+                  Expanded(
+                    child:
+                    InkWell(
+                      onTap: () {
+                        showDialog(
+                          context: context,
+                          builder: (BuildContext context) {
+                            return AlertDialog(
+                              title: Text('Proposition de dépenses'),
+                              content: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Text('Exemple de pourcentages de dépenses :'),
+                                  SizedBox(height: 8),
+
+                                  Text("Épargne    :  $epargne"),
+                                  Text("Shopping   :   $shopping"),
+                                  Text("Restaurant :  $restaurant"),
+                                  Text("Voyage     :  $voyage"),
+                                  Text("Imprevu    :  $imprevu"),
+                                ],
+                              ),
+                              actions: [
+                                ElevatedButton(
+                                  onPressed: () {
+                                    Navigator.pop(context);
+                                  },
+                                  child: Text('Fermer'),
+                                ),
+                              ],
+                            );
+                          },
+                        );
+                      },
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(
+                            Icons.account_balance,
+                            size: 32,
+                            color: Colors.white,
+                          ),
+                          Text(
+                            'Gestion',
+                            style: TextStyle(color: Colors.white),
+                          ),
+                        ],
+                      ),
+                    ),),
                     Expanded(
                       child: InkWell(
                         onTap: () {
@@ -256,39 +349,7 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 
-  Future<List<GDPData>> getChartData() async {
-    var iduser = 1;
-    var loyer = 'loyer';
-    var courses = 'courses';
-    String prix_loyer;
-    String prix_Course;
-    basedd bdd = await basedd();
-    await bdd.initialDb();
 
-    List<Map> result1 = await bdd.readData('SELECT * FROM charge WHERE iduser=2 and nom_charge="loyer"');
-    List<Map> result2 = await bdd.readData('SELECT * FROM charge WHERE iduser=2 and nom_charge="Courses"');
-    print("read");
-    prix_loyer = result1[0]['prix'];
-    prix_Course = result2[0]['prix'];
-    print(prix_loyer);
-    print(prix_Course);
-
-    final List<GDPData> chartData = [
-      GDPData(loyer, int.parse(prix_loyer), Colors.blue),
-      GDPData(courses, int.parse(prix_Course), Colors.green),
-      GDPData(loyer, int.parse(prix_loyer), Colors.orange),
-      GDPData(courses, int.parse(prix_Course), Colors.red),
-      GDPData(loyer, int.parse(prix_loyer), Colors.purple),
-      GDPData(courses, int.parse(prix_Course), Colors.yellow),
-    ];
-    calculateRemainingSalary(chartData);
-    return chartData;
-  }
-
-  void calculateRemainingSalary(List<GDPData> chartData) {
-    int totalCharges = chartData.fold(0, (sum, data) => sum + data.gdp);
-    remainingSalary = 15000 - totalCharges;
-  }
 
   void _showAddComponentDialog(BuildContext context, String buttonLabel) {
     if (buttonLabel != 'Charges') return; // Afficher le dialogue uniquement pour le bouton "Charges"
